@@ -10,6 +10,7 @@ use crate::evaluate::{evaluate, EvalMasks};
 use crate::magic::AttackTables;
 use crate::movegen::{generate_moves, make_move, MoveFlag};
 use crate::moves::{Move, MoveList};
+use crate::see::see;
 use crate::tt::{TranspositionTable, HASH_FLAG_ALPHA, HASH_FLAG_BETA, HASH_FLAG_EXACT, NO_HASH_ENTRY};
 use crate::types::*;
 use crate::zobrist::ZobristKeys;
@@ -107,6 +108,7 @@ impl Searcher {
         ply: usize,
         tt_move: Option<Move>,
         prev_move: Option<Move>,
+        attack_tables: &AttackTables,
     ) -> i32 {
         if self.score_pv && ply < MAX_PLY && self.pv_table[0][ply] == m {
             return 20000;
@@ -134,7 +136,14 @@ impl Searcher {
                 }
             }
 
-            return MVV_LVA[m.piece() as usize][target_piece] + 10000;
+            // SEE move ordering:
+            // Winning or equal captures (SEE >= 0) sorted at the top (10000 + MVV-LVA).
+            // Losing captures (SEE < 0) sorted below quiet moves (-10000 + MVV-LVA).
+            if see(board, m, 0, attack_tables) {
+                return MVV_LVA[m.piece() as usize][target_piece] + 10000;
+            } else {
+                return MVV_LVA[m.piece() as usize][target_piece] - 10000;
+            }
         }
 
         if ply < MAX_PLY {
@@ -162,10 +171,11 @@ impl Searcher {
         ply: usize,
         tt_move: Option<Move>,
         prev_move: Option<Move>,
+        attack_tables: &AttackTables,
     ) {
         let mut scores = [0i32; 256];
         for i in 0..move_list.count {
-            scores[i] = self.score_move(board, move_list.get(i), ply, tt_move, prev_move);
+            scores[i] = self.score_move(board, move_list.get(i), ply, tt_move, prev_move, attack_tables);
         }
 
         for i in 0..move_list.count {
@@ -221,12 +231,17 @@ impl Searcher {
 
         let mut move_list = MoveList::new();
         generate_moves(board, attack_tables, &mut move_list);
-        self.sort_moves(board, &mut move_list, board.ply, None, None);
+        self.sort_moves(board, &mut move_list, board.ply, None, None, attack_tables);
 
         let state = board.save_state();
 
         for i in 0..move_list.count {
             let m = move_list.get(i);
+
+            // SEE pruning in quiescence: skip captures with negative SEE (losing trades)
+            if !in_check && !see(board, m, 0, attack_tables) {
+                continue;
+            }
 
             // Delta pruning: skip quiet/low-value captures unable to raise alpha
             if !in_check && m.promoted().is_none() {
@@ -416,16 +431,32 @@ impl Searcher {
             }
         }
 
-        self.sort_moves(board, &mut move_list, board.ply, tt_move, prev_move);
+        self.sort_moves(board, &mut move_list, board.ply, tt_move, prev_move, attack_tables);
 
         let mut legal_moves = 0;
         let mut moves_searched = 0;
+        let mut quiet_moves_searched = 0;
+        let mut quiet_moves = [Move::NULL; 64];
+        let mut quiet_count = 0;
         let mut hash_flag = HASH_FLAG_ALPHA;
         let mut best_move = None;
         let state = board.save_state();
 
         for i in 0..move_list.count {
             let m = move_list.get(i);
+
+            // Late Move Pruning (LMP): at non-PV shallow depth, prune excess quiet moves
+            if !pv_node
+                && depth <= 4
+                && !in_check
+                && !m.is_capture()
+                && m.promoted().is_none()
+            {
+                let lmp_threshold = 3 + 3 * depth * depth;
+                if quiet_moves_searched >= lmp_threshold as usize {
+                    continue;
+                }
+            }
 
             // Futility Pruning for quiet moves at shallow depth
             if depth <= 2
@@ -451,6 +482,13 @@ impl Searcher {
             }
 
             legal_moves += 1;
+            if !m.is_capture() {
+                quiet_moves_searched += 1;
+                if quiet_count < 64 {
+                    quiet_moves[quiet_count] = m;
+                    quiet_count += 1;
+                }
+            }
             let mut score;
 
             // Full depth search on first move
@@ -562,6 +600,19 @@ impl Searcher {
                         }
                         if let Some(prev) = prev_move {
                             self.counter_moves[prev.piece() as usize][prev.target()] = m;
+                        }
+                        // History heuristic bonus & malus
+                        let bonus = (depth * depth).min(400);
+                        self.history_moves[m.piece() as usize][m.target()] += bonus;
+                        self.history_moves[m.piece() as usize][m.target()] =
+                            self.history_moves[m.piece() as usize][m.target()].clamp(-20000, 20000);
+
+                        // History Malus: penalize earlier quiet moves that failed to cause a cutoff
+                        for k in 0..quiet_count.saturating_sub(1) {
+                            let qm = quiet_moves[k];
+                            self.history_moves[qm.piece() as usize][qm.target()] -= bonus;
+                            self.history_moves[qm.piece() as usize][qm.target()] =
+                                self.history_moves[qm.piece() as usize][qm.target()].clamp(-20000, 20000);
                         }
                     }
                     return beta;
@@ -812,7 +863,8 @@ mod tests {
 
         searcher.counter_moves[prev.piece() as usize][prev.target()] = reply;
 
-        let score = searcher.score_move(&board, reply, 0, None, Some(prev));
+        let attack_tables = AttackTables::new();
+        let score = searcher.score_move(&board, reply, 0, None, Some(prev), &attack_tables);
         assert_eq!(score, 7000);
     }
 }

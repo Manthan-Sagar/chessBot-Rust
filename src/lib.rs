@@ -10,4 +10,5 @@ pub mod perft;
 pub mod evaluate;
 pub mod tt;
 pub mod search;
+pub mod see;
 pub mod uci;

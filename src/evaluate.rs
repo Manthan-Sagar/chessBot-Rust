@@ -327,6 +327,14 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
     let white_king_sq = get_ls1b_index(board.bitboards[Piece::K as usize]).unwrap_or(60);
     let black_king_sq = get_ls1b_index(board.bitboards[Piece::KingBlack as usize]).unwrap_or(4);
 
+    let white_king_ring = attack_tables.king_attacks[white_king_sq] | (1u64 << white_king_sq);
+    let black_king_ring = attack_tables.king_attacks[black_king_sq] | (1u64 << black_king_sq);
+
+    let mut white_attack_weight = 0i32;
+    let mut white_attackers_count = 0usize;
+    let mut black_attack_weight = 0i32;
+    let mut black_attackers_count = 0usize;
+
     for bb_piece in 0..12 {
         let mut bitboard = board.bitboards[bb_piece];
         while bitboard != 0 {
@@ -370,13 +378,27 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                             score_endgame += (bk_dist - wk_dist) * 6;
                         }
                     }
+
+                    // Pawn phalanx (horizontal duo)
+                    if (square % 8) < 7 && get_bit(board.bitboards[Piece::P as usize], square + 1) {
+                        let r = square / 8;
+                        let bonus = match r {
+                            4 => 15,
+                            3 => 20,
+                            2 => 25,
+                            _ => 0,
+                        };
+                        score_opening += bonus;
+                        score_endgame += bonus;
+                    }
                 }
                 1 => { // White Knight (N)
                     score_opening += POSITIONAL_SCORE[OPENING][KNIGHT][square];
                     score_endgame += POSITIONAL_SCORE[ENDGAME][KNIGHT][square];
 
                     // Knight mobility
-                    let safe_sqs = attack_tables.knight_attacks[square] & !black_pawn_attacks & !board.occupancies[Color::White as usize];
+                    let n_attacks = attack_tables.knight_attacks[square];
+                    let safe_sqs = n_attacks & !black_pawn_attacks & !board.occupancies[Color::White as usize];
                     let mob = count_bits(safe_sqs) as i32 - 4;
                     score_opening += mob * 4;
                     score_endgame += mob * 4;
@@ -390,14 +412,29 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                             score_endgame += 15;
                         }
                     }
+
+                    // King ring attacks
+                    let att = count_bits(n_attacks & black_king_ring) as i32;
+                    if att > 0 {
+                        white_attack_weight += att * 2;
+                        white_attackers_count += 1;
+                    }
                 }
                 2 => { // White Bishop (B)
                     score_opening += POSITIONAL_SCORE[OPENING][BISHOP][square];
                     score_endgame += POSITIONAL_SCORE[ENDGAME][BISHOP][square];
 
-                    let attacks_count = count_bits(attack_tables.get_bishop_attacks(square, occ_both)) as i32;
+                    let b_attacks = attack_tables.get_bishop_attacks(square, occ_both);
+                    let attacks_count = count_bits(b_attacks) as i32;
                     score_opening += (attacks_count - BISHOP_UNIT) * BISHOP_MOBILITY_OPENING;
                     score_endgame += (attacks_count - BISHOP_UNIT) * BISHOP_MOBILITY_ENDGAME;
+
+                    // King ring attacks
+                    let att = count_bits(b_attacks & black_king_ring) as i32;
+                    if att > 0 {
+                        white_attack_weight += att * 2;
+                        white_attackers_count += 1;
+                    }
                 }
                 3 => { // White Rook (R)
                     score_opening += POSITIONAL_SCORE[OPENING][ROOK][square];
@@ -418,14 +455,30 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                         score_opening += OPEN_FILE_SCORE;
                         score_endgame += OPEN_FILE_SCORE;
                     }
+
+                    // King ring attacks
+                    let r_attacks = attack_tables.get_rook_attacks(square, occ_both);
+                    let att = count_bits(r_attacks & black_king_ring) as i32;
+                    if att > 0 {
+                        white_attack_weight += att * 3;
+                        white_attackers_count += 1;
+                    }
                 }
                 4 => { // White Queen (Q)
                     score_opening += POSITIONAL_SCORE[OPENING][QUEEN][square];
                     score_endgame += POSITIONAL_SCORE[ENDGAME][QUEEN][square];
 
-                    let attacks_count = count_bits(attack_tables.get_queen_attacks(square, occ_both)) as i32;
+                    let q_attacks = attack_tables.get_queen_attacks(square, occ_both);
+                    let attacks_count = count_bits(q_attacks) as i32;
                     score_opening += (attacks_count - QUEEN_UNIT) * QUEEN_MOBILITY_OPENING;
                     score_endgame += (attacks_count - QUEEN_UNIT) * QUEEN_MOBILITY_ENDGAME;
+
+                    // King ring attacks
+                    let att = count_bits(q_attacks & black_king_ring) as i32;
+                    if att > 0 {
+                        white_attack_weight += att * 5;
+                        white_attackers_count += 1;
+                    }
                 }
                 5 => { // White King (K)
                     score_opening += POSITIONAL_SCORE[OPENING][KING][square];
@@ -484,6 +537,19 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                             score_endgame -= (wk_dist - bk_dist) * 6;
                         }
                     }
+
+                    // Pawn phalanx (horizontal duo)
+                    if (square % 8) < 7 && get_bit(board.bitboards[Piece::PawnBlack as usize], square + 1) {
+                        let r = square / 8;
+                        let bonus = match r {
+                            3 => 15,
+                            4 => 20,
+                            5 => 25,
+                            _ => 0,
+                        };
+                        score_opening -= bonus;
+                        score_endgame -= bonus;
+                    }
                 }
                 7 => { // Black Knight (n)
                     let mirror_sq = MIRROR_SCORE[square];
@@ -491,7 +557,8 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                     score_endgame -= POSITIONAL_SCORE[ENDGAME][KNIGHT][mirror_sq];
 
                     // Knight mobility
-                    let safe_sqs = attack_tables.knight_attacks[square] & !white_pawn_attacks & !board.occupancies[Color::Black as usize];
+                    let n_attacks = attack_tables.knight_attacks[square];
+                    let safe_sqs = n_attacks & !white_pawn_attacks & !board.occupancies[Color::Black as usize];
                     let mob = count_bits(safe_sqs) as i32 - 4;
                     score_opening -= mob * 4;
                     score_endgame -= mob * 4;
@@ -505,15 +572,30 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                             score_endgame -= 15;
                         }
                     }
+
+                    // King ring attacks
+                    let att = count_bits(n_attacks & white_king_ring) as i32;
+                    if att > 0 {
+                        black_attack_weight += att * 2;
+                        black_attackers_count += 1;
+                    }
                 }
                 8 => { // Black Bishop (b)
                     let mirror_sq = MIRROR_SCORE[square];
                     score_opening -= POSITIONAL_SCORE[OPENING][BISHOP][mirror_sq];
                     score_endgame -= POSITIONAL_SCORE[ENDGAME][BISHOP][mirror_sq];
 
-                    let attacks_count = count_bits(attack_tables.get_bishop_attacks(square, occ_both)) as i32;
+                    let b_attacks = attack_tables.get_bishop_attacks(square, occ_both);
+                    let attacks_count = count_bits(b_attacks) as i32;
                     score_opening -= (attacks_count - BISHOP_UNIT) * BISHOP_MOBILITY_OPENING;
                     score_endgame -= (attacks_count - BISHOP_UNIT) * BISHOP_MOBILITY_ENDGAME;
+
+                    // King ring attacks
+                    let att = count_bits(b_attacks & white_king_ring) as i32;
+                    if att > 0 {
+                        black_attack_weight += att * 2;
+                        black_attackers_count += 1;
+                    }
                 }
                 9 => { // Black Rook (r)
                     let mirror_sq = MIRROR_SCORE[square];
@@ -535,15 +617,31 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                         score_opening -= OPEN_FILE_SCORE;
                         score_endgame -= OPEN_FILE_SCORE;
                     }
+
+                    // King ring attacks
+                    let r_attacks = attack_tables.get_rook_attacks(square, occ_both);
+                    let att = count_bits(r_attacks & white_king_ring) as i32;
+                    if att > 0 {
+                        black_attack_weight += att * 3;
+                        black_attackers_count += 1;
+                    }
                 }
                 10 => { // Black Queen (q)
                     let mirror_sq = MIRROR_SCORE[square];
                     score_opening -= POSITIONAL_SCORE[OPENING][QUEEN][mirror_sq];
                     score_endgame -= POSITIONAL_SCORE[ENDGAME][QUEEN][mirror_sq];
 
-                    let attacks_count = count_bits(attack_tables.get_queen_attacks(square, occ_both)) as i32;
+                    let q_attacks = attack_tables.get_queen_attacks(square, occ_both);
+                    let attacks_count = count_bits(q_attacks) as i32;
                     score_opening -= (attacks_count - QUEEN_UNIT) * QUEEN_MOBILITY_OPENING;
                     score_endgame -= (attacks_count - QUEEN_UNIT) * QUEEN_MOBILITY_ENDGAME;
+
+                    // King ring attacks
+                    let att = count_bits(q_attacks & white_king_ring) as i32;
+                    if att > 0 {
+                        black_attack_weight += att * 5;
+                        black_attackers_count += 1;
+                    }
                 }
                 11 => { // Black King (k)
                     let mirror_sq = MIRROR_SCORE[square];
@@ -572,6 +670,17 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                 _ => {}
             }
         }
+    }
+
+    // King ring attack evaluation
+    const ATTACK_SCALE: [i32; 8] = [0, 0, 50, 75, 88, 94, 97, 100];
+    if white_attackers_count >= 2 {
+        let scale = ATTACK_SCALE[white_attackers_count.min(7)];
+        score_opening += (white_attack_weight * white_attack_weight * scale) / 800;
+    }
+    if black_attackers_count >= 2 {
+        let scale = ATTACK_SCALE[black_attackers_count.min(7)];
+        score_opening -= (black_attack_weight * black_attack_weight * scale) / 800;
     }
 
     // Continuous 24-phase linear interpolation

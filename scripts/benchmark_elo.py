@@ -94,7 +94,13 @@ def play_elo_game(white_is_rust, target_elo, time_per_move=0.3, max_moves=60):
         "moves": moves_history
     }
 
-def run_elo_benchmark(elos=[2400, 2500, 2600]):
+def run_elo_benchmark(elos=None):
+    if elos is None:
+        if len(sys.argv) > 1:
+            elos = [int(x) for x in sys.argv[1:]]
+        else:
+            elos = [2850]
+            
     print(f"=== Starting Calibrated Stockfish Elo Benchmark: {elos} ===")
     results = {}
     
@@ -120,10 +126,11 @@ def run_elo_benchmark(elos=[2400, 2500, 2600]):
         }
         print(f"\n>>> Elo {elo} Series Result: {total_score}/2.0 ({(total_score/2.0)*100:.1f}%) | Avg ACPL: {avg_acpl:.1f} cp <<<")
         
-    with open("elo_benchmark_results.json", "w") as f:
+    out_file = f"elo_benchmark_{'_'.join(str(e) for e in elos)}_results.json"
+    with open(out_file, "w") as f:
         json.dump(results, f, indent=2)
         
-    print("\n=== Benchmark Complete! Results saved to elo_benchmark_results.json ===")
+    print(f"\n=== Benchmark Complete! Results saved to {out_file} ===")
     return results
 
 if __name__ == "__main__":
