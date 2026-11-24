@@ -1,0 +1,2600 @@
+{
+  "2400": {
+    "score": 1.0,
+    "max_score": 2.0,
+    "pct": 50.0,
+    "avg_acpl": 26.43333333333333,
+    "g1": {
+      "target_elo": 2400,
+      "white_is_rust": true,
+      "result": "1/2-1/2 (Move limit reached)",
+      "rust_score": 0.5,
+      "rust_acpl": 24.4,
+      "total_plies": 60,
+      "moves": [
+        {
+          "ply": 1,
+          "player": "RustEngine",
+          "san": "e4",
+          "eval": 32,
+          "cp_loss": 0
+        },
+        {
+          "ply": 2,
+          "player": "Stockfish-2400",
+          "san": "e6",
+          "eval": 33,
+          "cp_loss": 1
+        },
+        {
+          "ply": 3,
+          "player": "RustEngine",
+          "san": "d4",
+          "eval": 33,
+          "cp_loss": 0
+        },
+        {
+          "ply": 4,
+          "player": "Stockfish-2400",
+          "san": "d5",
+          "eval": 37,
+          "cp_loss": 4
+        },
+        {
+          "ply": 5,
+          "player": "RustEngine",
+          "san": "Nc3",
+          "eval": 38,
+          "cp_loss": 0
+        },
+        {
+          "ply": 6,
+          "player": "Stockfish-2400",
+          "san": "Nf6",
+          "eval": 40,
+          "cp_loss": 0
+        },
+        {
+          "ply": 7,
+          "player": "RustEngine",
+          "san": "e5",
+          "eval": 37,
+          "cp_loss": 3
+        },
+        {
+          "ply": 8,
+          "player": "Stockfish-2400",
+          "san": "Nfd7",
+          "eval": 29,
+          "cp_loss": 0
+        },
+        {
+          "ply": 9,
+          "player": "RustEngine",
+          "san": "Nf3",
+          "eval": 29,
+          "cp_loss": 0
+        },
+        {
+          "ply": 10,
+          "player": "Stockfish-2400",
+          "san": "a6",
+          "eval": 65,
+          "cp_loss": 48
+        },
+        {
+          "ply": 11,
+          "player": "RustEngine",
+          "san": "Bd3",
+          "eval": -9,
+          "cp_loss": 82
+        },
+        {
+          "ply": 12,
+          "player": "Stockfish-2400",
+          "san": "c5",
+          "eval": 25,
+          "cp_loss": 1
+        },
+        {
+          "ply": 13,
+          "player": "RustEngine",
+          "san": "dxc5",
+          "eval": 25,
+          "cp_loss": 0
+        },
+        {
+          "ply": 14,
+          "player": "Stockfish-2400",
+          "san": "Nxc5",
+          "eval": 26,
+          "cp_loss": 1
+        },
+        {
+          "ply": 15,
+          "player": "RustEngine",
+          "san": "Bg5",
+          "eval": 8,
+          "cp_loss": 21
+        },
+        {
+          "ply": 16,
+          "player": "Stockfish-2400",
+          "san": "Nxd3+",
+          "eval": 22,
+          "cp_loss": 30
+        },
+        {
+          "ply": 17,
+          "player": "RustEngine",
+          "san": "cxd3",
+          "eval": 22,
+          "cp_loss": 1
+        },
+        {
+          "ply": 18,
+          "player": "Stockfish-2400",
+          "san": "Be7",
+          "eval": 27,
+          "cp_loss": 0
+        },
+        {
+          "ply": 19,
+          "player": "RustEngine",
+          "san": "Bxe7",
+          "eval": 27,
+          "cp_loss": 0
+        },
+        {
+          "ply": 20,
+          "player": "Stockfish-2400",
+          "san": "Kxe7",
+          "eval": 73,
+          "cp_loss": 41
+        },
+        {
+          "ply": 21,
+          "player": "RustEngine",
+          "san": "O-O",
+          "eval": 85,
+          "cp_loss": 0
+        },
+        {
+          "ply": 22,
+          "player": "Stockfish-2400",
+          "san": "Kf8",
+          "eval": 95,
+          "cp_loss": 10
+        },
+        {
+          "ply": 23,
+          "player": "RustEngine",
+          "san": "Rc1",
+          "eval": 105,
+          "cp_loss": 0
+        },
+        {
+          "ply": 24,
+          "player": "Stockfish-2400",
+          "san": "h6",
+          "eval": 105,
+          "cp_loss": 2
+        },
+        {
+          "ply": 25,
+          "player": "RustEngine",
+          "san": "Na4",
+          "eval": 140,
+          "cp_loss": 0
+        },
+        {
+          "ply": 26,
+          "player": "Stockfish-2400",
+          "san": "g6",
+          "eval": 182,
+          "cp_loss": 40
+        },
+        {
+          "ply": 27,
+          "player": "RustEngine",
+          "san": "d4",
+          "eval": 138,
+          "cp_loss": 43
+        },
+        {
+          "ply": 28,
+          "player": "Stockfish-2400",
+          "san": "Ra7",
+          "eval": 169,
+          "cp_loss": 31
+        },
+        {
+          "ply": 29,
+          "player": "RustEngine",
+          "san": "h3",
+          "eval": 111,
+          "cp_loss": 51
+        },
+        {
+          "ply": 30,
+          "player": "Stockfish-2400",
+          "san": "Bd7",
+          "eval": 123,
+          "cp_loss": 3
+        },
+        {
+          "ply": 31,
+          "player": "RustEngine",
+          "san": "Nc5",
+          "eval": 95,
+          "cp_loss": 18
+        },
+        {
+          "ply": 32,
+          "player": "Stockfish-2400",
+          "san": "Bb5",
+          "eval": 91,
+          "cp_loss": 0
+        },
+        {
+          "ply": 33,
+          "player": "RustEngine",
+          "san": "Nd3",
+          "eval": 65,
+          "cp_loss": 26
+        },
+        {
+          "ply": 34,
+          "player": "Stockfish-2400",
+          "san": "Bxd3",
+          "eval": 88,
+          "cp_loss": 22
+        },
+        {
+          "ply": 35,
+          "player": "RustEngine",
+          "san": "Qxd3",
+          "eval": 98,
+          "cp_loss": 0
+        },
+        {
+          "ply": 36,
+          "player": "Stockfish-2400",
+          "san": "Kg7",
+          "eval": 82,
+          "cp_loss": 0
+        },
+        {
+          "ply": 37,
+          "player": "RustEngine",
+          "san": "Rc5",
+          "eval": 57,
+          "cp_loss": 26
+        },
+        {
+          "ply": 38,
+          "player": "Stockfish-2400",
+          "san": "Qe7",
+          "eval": 100,
+          "cp_loss": 28
+        },
+        {
+          "ply": 39,
+          "player": "RustEngine",
+          "san": "h4",
+          "eval": 65,
+          "cp_loss": 38
+        },
+        {
+          "ply": 40,
+          "player": "Stockfish-2400",
+          "san": "b6",
+          "eval": 42,
+          "cp_loss": 0
+        },
+        {
+          "ply": 41,
+          "player": "RustEngine",
+          "san": "Rc3",
+          "eval": 42,
+          "cp_loss": 0
+        },
+        {
+          "ply": 42,
+          "player": "Stockfish-2400",
+          "san": "Rc7",
+          "eval": 44,
+          "cp_loss": 0
+        },
+        {
+          "ply": 43,
+          "player": "RustEngine",
+          "san": "Rfc1",
+          "eval": 30,
+          "cp_loss": 12
+        },
+        {
+          "ply": 44,
+          "player": "Stockfish-2400",
+          "san": "Rxc3",
+          "eval": 161,
+          "cp_loss": 139
+        },
+        {
+          "ply": 45,
+          "player": "RustEngine",
+          "san": "Rxc3",
+          "eval": 215,
+          "cp_loss": 0
+        },
+        {
+          "ply": 46,
+          "player": "Stockfish-2400",
+          "san": "Rd8",
+          "eval": 216,
+          "cp_loss": 5
+        },
+        {
+          "ply": 47,
+          "player": "RustEngine",
+          "san": "Qc2",
+          "eval": 208,
+          "cp_loss": 0
+        },
+        {
+          "ply": 48,
+          "player": "Stockfish-2400",
+          "san": "Qf8",
+          "eval": 271,
+          "cp_loss": 64
+        },
+        {
+          "ply": 49,
+          "player": "RustEngine",
+          "san": "h5",
+          "eval": 201,
+          "cp_loss": 79
+        },
+        {
+          "ply": 50,
+          "player": "Stockfish-2400",
+          "san": "gxh5",
+          "eval": 206,
+          "cp_loss": 0
+        },
+        {
+          "ply": 51,
+          "player": "RustEngine",
+          "san": "a3",
+          "eval": 161,
+          "cp_loss": 59
+        },
+        {
+          "ply": 52,
+          "player": "Stockfish-2400",
+          "san": "Qe7",
+          "eval": 190,
+          "cp_loss": 36
+        },
+        {
+          "ply": 53,
+          "player": "RustEngine",
+          "san": "b4",
+          "eval": 142,
+          "cp_loss": 77
+        },
+        {
+          "ply": 54,
+          "player": "Stockfish-2400",
+          "san": "a5",
+          "eval": 92,
+          "cp_loss": 0
+        },
+        {
+          "ply": 55,
+          "player": "RustEngine",
+          "san": "bxa5",
+          "eval": 97,
+          "cp_loss": 0
+        },
+        {
+          "ply": 56,
+          "player": "Stockfish-2400",
+          "san": "Nd7",
+          "eval": 213,
+          "cp_loss": 116
+        },
+        {
+          "ply": 57,
+          "player": "RustEngine",
+          "san": "a6",
+          "eval": 225,
+          "cp_loss": 0
+        },
+        {
+          "ply": 58,
+          "player": "Stockfish-2400",
+          "san": "Nb8",
+          "eval": 413,
+          "cp_loss": 146
+        },
+        {
+          "ply": 59,
+          "player": "RustEngine",
+          "san": "Qb2",
+          "eval": 218,
+          "cp_loss": 196
+        },
+        {
+          "ply": 60,
+          "player": "Stockfish-2400",
+          "san": "b5",
+          "eval": 323,
+          "cp_loss": 128
+        }
+      ]
+    },
+    "g2": {
+      "target_elo": 2400,
+      "white_is_rust": false,
+      "result": "1/2-1/2 (Move limit reached)",
+      "rust_score": 0.5,
+      "rust_acpl": 28.466666666666665,
+      "total_plies": 60,
+      "moves": [
+        {
+          "ply": 1,
+          "player": "Stockfish-2400",
+          "san": "Nf3",
+          "eval": 24,
+          "cp_loss": 7
+        },
+        {
+          "ply": 2,
+          "player": "RustEngine",
+          "san": "Nf6",
+          "eval": 21,
+          "cp_loss": 0
+        },
+        {
+          "ply": 3,
+          "player": "Stockfish-2400",
+          "san": "g3",
+          "eval": 16,
+          "cp_loss": 5
+        },
+        {
+          "ply": 4,
+          "player": "RustEngine",
+          "san": "d5",
+          "eval": 17,
+          "cp_loss": 1
+        },
+        {
+          "ply": 5,
+          "player": "Stockfish-2400",
+          "san": "d4",
+          "eval": 15,
+          "cp_loss": 1
+        },
+        {
+          "ply": 6,
+          "player": "RustEngine",
+          "san": "e6",
+          "eval": 37,
+          "cp_loss": 20
+        },
+        {
+          "ply": 7,
+          "player": "Stockfish-2400",
+          "san": "Be3",
+          "eval": -13,
+          "cp_loss": 40
+        },
+        {
+          "ply": 8,
+          "player": "RustEngine",
+          "san": "c5",
+          "eval": 7,
+          "cp_loss": 17
+        },
+        {
+          "ply": 9,
+          "player": "Stockfish-2400",
+          "san": "c3",
+          "eval": -31,
+          "cp_loss": 43
+        },
+        {
+          "ply": 10,
+          "player": "RustEngine",
+          "san": "Be7",
+          "eval": 10,
+          "cp_loss": 39
+        },
+        {
+          "ply": 11,
+          "player": "Stockfish-2400",
+          "san": "Bg2",
+          "eval": -19,
+          "cp_loss": 42
+        },
+        {
+          "ply": 12,
+          "player": "RustEngine",
+          "san": "O-O",
+          "eval": 6,
+          "cp_loss": 25
+        },
+        {
+          "ply": 13,
+          "player": "Stockfish-2400",
+          "san": "dxc5",
+          "eval": 1,
+          "cp_loss": 5
+        },
+        {
+          "ply": 14,
+          "player": "RustEngine",
+          "san": "Ng4",
+          "eval": 2,
+          "cp_loss": 1
+        },
+        {
+          "ply": 15,
+          "player": "Stockfish-2400",
+          "san": "Bd4",
+          "eval": 23,
+          "cp_loss": 0
+        },
+        {
+          "ply": 16,
+          "player": "RustEngine",
+          "san": "Nc6",
+          "eval": 19,
+          "cp_loss": 4
+        },
+        {
+          "ply": 17,
+          "player": "Stockfish-2400",
+          "san": "h3",
+          "eval": 5,
+          "cp_loss": 21
+        },
+        {
+          "ply": 18,
+          "player": "RustEngine",
+          "san": "Nf6",
+          "eval": 3,
+          "cp_loss": 2
+        },
+        {
+          "ply": 19,
+          "player": "Stockfish-2400",
+          "san": "Nbd2",
+          "eval": 7,
+          "cp_loss": 0
+        },
+        {
+          "ply": 20,
+          "player": "RustEngine",
+          "san": "b6",
+          "eval": 7,
+          "cp_loss": 0
+        },
+        {
+          "ply": 21,
+          "player": "Stockfish-2400",
+          "san": "b4",
+          "eval": 4,
+          "cp_loss": 3
+        },
+        {
+          "ply": 22,
+          "player": "RustEngine",
+          "san": "Nxd4",
+          "eval": 71,
+          "cp_loss": 72
+        },
+        {
+          "ply": 23,
+          "player": "Stockfish-2400",
+          "san": "cxd4",
+          "eval": 134,
+          "cp_loss": 0
+        },
+        {
+          "ply": 24,
+          "player": "RustEngine",
+          "san": "a5",
+          "eval": 131,
+          "cp_loss": 0
+        },
+        {
+          "ply": 25,
+          "player": "Stockfish-2400",
+          "san": "a3",
+          "eval": 108,
+          "cp_loss": 25
+        },
+        {
+          "ply": 26,
+          "player": "RustEngine",
+          "san": "Bb7",
+          "eval": 198,
+          "cp_loss": 80
+        },
+        {
+          "ply": 27,
+          "player": "Stockfish-2400",
+          "san": "O-O",
+          "eval": 192,
+          "cp_loss": 10
+        },
+        {
+          "ply": 28,
+          "player": "RustEngine",
+          "san": "axb4",
+          "eval": 186,
+          "cp_loss": 0
+        },
+        {
+          "ply": 29,
+          "player": "Stockfish-2400",
+          "san": "Qb3",
+          "eval": -50,
+          "cp_loss": 267
+        },
+        {
+          "ply": 30,
+          "player": "RustEngine",
+          "san": "bxa3",
+          "eval": -63,
+          "cp_loss": 10
+        },
+        {
+          "ply": 31,
+          "player": "Stockfish-2400",
+          "san": "Rxa3",
+          "eval": -99,
+          "cp_loss": 36
+        },
+        {
+          "ply": 32,
+          "player": "RustEngine",
+          "san": "bxc5",
+          "eval": -109,
+          "cp_loss": 0
+        },
+        {
+          "ply": 33,
+          "player": "Stockfish-2400",
+          "san": "dxc5",
+          "eval": -109,
+          "cp_loss": 0
+        },
+        {
+          "ply": 34,
+          "player": "RustEngine",
+          "san": "Nd7",
+          "eval": -113,
+          "cp_loss": 0
+        },
+        {
+          "ply": 35,
+          "player": "Stockfish-2400",
+          "san": "Rxa8",
+          "eval": -112,
+          "cp_loss": 0
+        },
+        {
+          "ply": 36,
+          "player": "RustEngine",
+          "san": "Qxa8",
+          "eval": -101,
+          "cp_loss": 10
+        },
+        {
+          "ply": 37,
+          "player": "Stockfish-2400",
+          "san": "Nd4",
+          "eval": -116,
+          "cp_loss": 12
+        },
+        {
+          "ply": 38,
+          "player": "RustEngine",
+          "san": "Nxc5",
+          "eval": -109,
+          "cp_loss": 0
+        },
+        {
+          "ply": 39,
+          "player": "Stockfish-2400",
+          "san": "Qb4",
+          "eval": -108,
+          "cp_loss": 0
+        },
+        {
+          "ply": 40,
+          "player": "RustEngine",
+          "san": "Rb8",
+          "eval": -104,
+          "cp_loss": 4
+        },
+        {
+          "ply": 41,
+          "player": "Stockfish-2400",
+          "san": "Rb1",
+          "eval": -103,
+          "cp_loss": 0
+        },
+        {
+          "ply": 42,
+          "player": "RustEngine",
+          "san": "Qa6",
+          "eval": -33,
+          "cp_loss": 65
+        },
+        {
+          "ply": 43,
+          "player": "Stockfish-2400",
+          "san": "N4b3",
+          "eval": -208,
+          "cp_loss": 172
+        },
+        {
+          "ply": 44,
+          "player": "RustEngine",
+          "san": "Nxb3",
+          "eval": -278,
+          "cp_loss": 0
+        },
+        {
+          "ply": 45,
+          "player": "Stockfish-2400",
+          "san": "Qxb3",
+          "eval": -270,
+          "cp_loss": 0
+        },
+        {
+          "ply": 46,
+          "player": "RustEngine",
+          "san": "Qxe2",
+          "eval": -293,
+          "cp_loss": 0
+        },
+        {
+          "ply": 47,
+          "player": "Stockfish-2400",
+          "san": "Qc2",
+          "eval": -333,
+          "cp_loss": 36
+        },
+        {
+          "ply": 48,
+          "player": "RustEngine",
+          "san": "Rc8",
+          "eval": -219,
+          "cp_loss": 6
+        },
+        {
+          "ply": 49,
+          "player": "Stockfish-2400",
+          "san": "Qb2",
+          "eval": -248,
+          "cp_loss": 29
+        },
+        {
+          "ply": 50,
+          "player": "RustEngine",
+          "san": "Bc6",
+          "eval": -24,
+          "cp_loss": 248
+        },
+        {
+          "ply": 51,
+          "player": "Stockfish-2400",
+          "san": "Bf1",
+          "eval": -33,
+          "cp_loss": 0
+        },
+        {
+          "ply": 52,
+          "player": "RustEngine",
+          "san": "Qh5",
+          "eval": -33,
+          "cp_loss": 0
+        },
+        {
+          "ply": 53,
+          "player": "Stockfish-2400",
+          "san": "Rc1",
+          "eval": -33,
+          "cp_loss": 0
+        },
+        {
+          "ply": 54,
+          "player": "RustEngine",
+          "san": "h6",
+          "eval": 19,
+          "cp_loss": 51
+        },
+        {
+          "ply": 55,
+          "player": "Stockfish-2400",
+          "san": "h4",
+          "eval": -32,
+          "cp_loss": 51
+        },
+        {
+          "ply": 56,
+          "player": "RustEngine",
+          "san": "Qg4",
+          "eval": 38,
+          "cp_loss": 57
+        },
+        {
+          "ply": 57,
+          "player": "Stockfish-2400",
+          "san": "Ba6",
+          "eval": 0,
+          "cp_loss": 0
+        },
+        {
+          "ply": 58,
+          "player": "RustEngine",
+          "san": "Bxh4",
+          "eval": 128,
+          "cp_loss": 135
+        },
+        {
+          "ply": 59,
+          "player": "Stockfish-2400",
+          "san": "Bxc8",
+          "eval": 207,
+          "cp_loss": 0
+        },
+        {
+          "ply": 60,
+          "player": "RustEngine",
+          "san": "Bxg3",
+          "eval": 227,
+          "cp_loss": 7
+        }
+      ]
+    }
+  },
+  "2500": {
+    "score": 1.0,
+    "max_score": 2.0,
+    "pct": 50.0,
+    "avg_acpl": 22.200000000000003,
+    "g1": {
+      "target_elo": 2500,
+      "white_is_rust": true,
+      "result": "1/2-1/2 (Move limit reached)",
+      "rust_score": 0.5,
+      "rust_acpl": 23.3,
+      "total_plies": 60,
+      "moves": [
+        {
+          "ply": 1,
+          "player": "RustEngine",
+          "san": "e4",
+          "eval": 32,
+          "cp_loss": 0
+        },
+        {
+          "ply": 2,
+          "player": "Stockfish-2500",
+          "san": "g6",
+          "eval": 67,
+          "cp_loss": 35
+        },
+        {
+          "ply": 3,
+          "player": "RustEngine",
+          "san": "Nc3",
+          "eval": 67,
+          "cp_loss": 0
+        },
+        {
+          "ply": 4,
+          "player": "Stockfish-2500",
+          "san": "Bg7",
+          "eval": 72,
+          "cp_loss": 48
+        },
+        {
+          "ply": 5,
+          "player": "RustEngine",
+          "san": "d4",
+          "eval": 69,
+          "cp_loss": 0
+        },
+        {
+          "ply": 6,
+          "player": "Stockfish-2500",
+          "san": "d6",
+          "eval": 61,
+          "cp_loss": 0
+        },
+        {
+          "ply": 7,
+          "player": "RustEngine",
+          "san": "Nf3",
+          "eval": 61,
+          "cp_loss": 0
+        },
+        {
+          "ply": 8,
+          "player": "Stockfish-2500",
+          "san": "c6",
+          "eval": 72,
+          "cp_loss": 11
+        },
+        {
+          "ply": 9,
+          "player": "RustEngine",
+          "san": "Bd3",
+          "eval": 50,
+          "cp_loss": 19
+        },
+        {
+          "ply": 10,
+          "player": "Stockfish-2500",
+          "san": "Nd7",
+          "eval": 62,
+          "cp_loss": 31
+        },
+        {
+          "ply": 11,
+          "player": "RustEngine",
+          "san": "O-O",
+          "eval": 61,
+          "cp_loss": 4
+        },
+        {
+          "ply": 12,
+          "player": "Stockfish-2500",
+          "san": "e5",
+          "eval": 60,
+          "cp_loss": 0
+        },
+        {
+          "ply": 13,
+          "player": "RustEngine",
+          "san": "Be3",
+          "eval": 43,
+          "cp_loss": 16
+        },
+        {
+          "ply": 14,
+          "player": "Stockfish-2500",
+          "san": "Qe7",
+          "eval": 65,
+          "cp_loss": 19
+        },
+        {
+          "ply": 15,
+          "player": "RustEngine",
+          "san": "Rc1",
+          "eval": 35,
+          "cp_loss": 26
+        },
+        {
+          "ply": 16,
+          "player": "Stockfish-2500",
+          "san": "Ngf6",
+          "eval": 36,
+          "cp_loss": 2
+        },
+        {
+          "ply": 17,
+          "player": "RustEngine",
+          "san": "dxe5",
+          "eval": 6,
+          "cp_loss": 27
+        },
+        {
+          "ply": 18,
+          "player": "Stockfish-2500",
+          "san": "Nxe5",
+          "eval": 6,
+          "cp_loss": 0
+        },
+        {
+          "ply": 19,
+          "player": "RustEngine",
+          "san": "Nxe5",
+          "eval": 7,
+          "cp_loss": 3
+        },
+        {
+          "ply": 20,
+          "player": "Stockfish-2500",
+          "san": "dxe5",
+          "eval": 3,
+          "cp_loss": 0
+        },
+        {
+          "ply": 21,
+          "player": "RustEngine",
+          "san": "Na4",
+          "eval": -5,
+          "cp_loss": 8
+        },
+        {
+          "ply": 22,
+          "player": "Stockfish-2500",
+          "san": "b6",
+          "eval": 9,
+          "cp_loss": 12
+        },
+        {
+          "ply": 23,
+          "player": "RustEngine",
+          "san": "a3",
+          "eval": -17,
+          "cp_loss": 15
+        },
+        {
+          "ply": 24,
+          "player": "Stockfish-2500",
+          "san": "Ng4",
+          "eval": -5,
+          "cp_loss": 13
+        },
+        {
+          "ply": 25,
+          "player": "RustEngine",
+          "san": "Bxb6",
+          "eval": -22,
+          "cp_loss": 17
+        },
+        {
+          "ply": 26,
+          "player": "Stockfish-2500",
+          "san": "axb6",
+          "eval": -49,
+          "cp_loss": 0
+        },
+        {
+          "ply": 27,
+          "player": "RustEngine",
+          "san": "Nxb6",
+          "eval": -35,
+          "cp_loss": 0
+        },
+        {
+          "ply": 28,
+          "player": "Stockfish-2500",
+          "san": "Qb7",
+          "eval": -27,
+          "cp_loss": 4
+        },
+        {
+          "ply": 29,
+          "player": "RustEngine",
+          "san": "Nxa8",
+          "eval": -27,
+          "cp_loss": 1
+        },
+        {
+          "ply": 30,
+          "player": "Stockfish-2500",
+          "san": "Nf6",
+          "eval": 70,
+          "cp_loss": 76
+        },
+        {
+          "ply": 31,
+          "player": "RustEngine",
+          "san": "Qd2",
+          "eval": 59,
+          "cp_loss": 14
+        },
+        {
+          "ply": 32,
+          "player": "Stockfish-2500",
+          "san": "Qxa8",
+          "eval": 16,
+          "cp_loss": 0
+        },
+        {
+          "ply": 33,
+          "player": "RustEngine",
+          "san": "Qb4",
+          "eval": -47,
+          "cp_loss": 68
+        },
+        {
+          "ply": 34,
+          "player": "Stockfish-2500",
+          "san": "Nd7",
+          "eval": -3,
+          "cp_loss": 35
+        },
+        {
+          "ply": 35,
+          "player": "RustEngine",
+          "san": "Bc4",
+          "eval": -22,
+          "cp_loss": 22
+        },
+        {
+          "ply": 36,
+          "player": "Stockfish-2500",
+          "san": "Bf6",
+          "eval": -35,
+          "cp_loss": 0
+        },
+        {
+          "ply": 37,
+          "player": "RustEngine",
+          "san": "Rcd1",
+          "eval": -40,
+          "cp_loss": 7
+        },
+        {
+          "ply": 38,
+          "player": "Stockfish-2500",
+          "san": "Qa7",
+          "eval": -13,
+          "cp_loss": 36
+        },
+        {
+          "ply": 39,
+          "player": "RustEngine",
+          "san": "Rfe1",
+          "eval": -58,
+          "cp_loss": 44
+        },
+        {
+          "ply": 40,
+          "player": "Stockfish-2500",
+          "san": "Bh4",
+          "eval": -32,
+          "cp_loss": 1
+        },
+        {
+          "ply": 41,
+          "player": "RustEngine",
+          "san": "Qd2",
+          "eval": -33,
+          "cp_loss": 0
+        },
+        {
+          "ply": 42,
+          "player": "Stockfish-2500",
+          "san": "O-O",
+          "eval": -41,
+          "cp_loss": 0
+        },
+        {
+          "ply": 43,
+          "player": "RustEngine",
+          "san": "g3",
+          "eval": -148,
+          "cp_loss": 110
+        },
+        {
+          "ply": 44,
+          "player": "Stockfish-2500",
+          "san": "Be7",
+          "eval": -143,
+          "cp_loss": 8
+        },
+        {
+          "ply": 45,
+          "player": "RustEngine",
+          "san": "Qh6",
+          "eval": -161,
+          "cp_loss": 9
+        },
+        {
+          "ply": 46,
+          "player": "Stockfish-2500",
+          "san": "Qc5",
+          "eval": -155,
+          "cp_loss": 32
+        },
+        {
+          "ply": 47,
+          "player": "RustEngine",
+          "san": "Ba6",
+          "eval": -240,
+          "cp_loss": 79
+        },
+        {
+          "ply": 48,
+          "player": "Stockfish-2500",
+          "san": "Bxa6",
+          "eval": -256,
+          "cp_loss": 0
+        },
+        {
+          "ply": 49,
+          "player": "RustEngine",
+          "san": "Rxd7",
+          "eval": -228,
+          "cp_loss": 0
+        },
+        {
+          "ply": 50,
+          "player": "Stockfish-2500",
+          "san": "Re8",
+          "eval": -155,
+          "cp_loss": 63
+        },
+        {
+          "ply": 51,
+          "player": "RustEngine",
+          "san": "Qe3",
+          "eval": -183,
+          "cp_loss": 45
+        },
+        {
+          "ply": 52,
+          "player": "Stockfish-2500",
+          "san": "Qxc2",
+          "eval": -183,
+          "cp_loss": 0
+        },
+        {
+          "ply": 53,
+          "player": "RustEngine",
+          "san": "Qc1",
+          "eval": -169,
+          "cp_loss": 4
+        },
+        {
+          "ply": 54,
+          "player": "Stockfish-2500",
+          "san": "Qc5",
+          "eval": -174,
+          "cp_loss": 2
+        },
+        {
+          "ply": 55,
+          "player": "RustEngine",
+          "san": "Qxc5",
+          "eval": -296,
+          "cp_loss": 155
+        },
+        {
+          "ply": 56,
+          "player": "Stockfish-2500",
+          "san": "Bxc5",
+          "eval": -373,
+          "cp_loss": 0
+        },
+        {
+          "ply": 57,
+          "player": "RustEngine",
+          "san": "Rc7",
+          "eval": -392,
+          "cp_loss": 6
+        },
+        {
+          "ply": 58,
+          "player": "Stockfish-2500",
+          "san": "Bb5",
+          "eval": -379,
+          "cp_loss": 2
+        },
+        {
+          "ply": 59,
+          "player": "RustEngine",
+          "san": "Rd1",
+          "eval": -364,
+          "cp_loss": 0
+        },
+        {
+          "ply": 60,
+          "player": "Stockfish-2500",
+          "san": "Bb6",
+          "eval": -345,
+          "cp_loss": 90
+        }
+      ]
+    },
+    "g2": {
+      "target_elo": 2500,
+      "white_is_rust": false,
+      "result": "1/2-1/2 (Move limit reached)",
+      "rust_score": 0.5,
+      "rust_acpl": 21.1,
+      "total_plies": 60,
+      "moves": [
+        {
+          "ply": 1,
+          "player": "Stockfish-2500",
+          "san": "e3",
+          "eval": 22,
+          "cp_loss": 9
+        },
+        {
+          "ply": 2,
+          "player": "RustEngine",
+          "san": "Nf6",
+          "eval": 16,
+          "cp_loss": 0
+        },
+        {
+          "ply": 3,
+          "player": "Stockfish-2500",
+          "san": "Nf3",
+          "eval": 15,
+          "cp_loss": 1
+        },
+        {
+          "ply": 4,
+          "player": "RustEngine",
+          "san": "d5",
+          "eval": 18,
+          "cp_loss": 4
+        },
+        {
+          "ply": 5,
+          "player": "Stockfish-2500",
+          "san": "Be2",
+          "eval": 10,
+          "cp_loss": 0
+        },
+        {
+          "ply": 6,
+          "player": "RustEngine",
+          "san": "Nc6",
+          "eval": 31,
+          "cp_loss": 25
+        },
+        {
+          "ply": 7,
+          "player": "Stockfish-2500",
+          "san": "Bb5",
+          "eval": -4,
+          "cp_loss": 34
+        },
+        {
+          "ply": 8,
+          "player": "RustEngine",
+          "san": "a6",
+          "eval": -7,
+          "cp_loss": 0
+        },
+        {
+          "ply": 9,
+          "player": "Stockfish-2500",
+          "san": "Be2",
+          "eval": -62,
+          "cp_loss": 55
+        },
+        {
+          "ply": 10,
+          "player": "RustEngine",
+          "san": "e5",
+          "eval": -65,
+          "cp_loss": 0
+        },
+        {
+          "ply": 11,
+          "player": "Stockfish-2500",
+          "san": "a3",
+          "eval": -125,
+          "cp_loss": 60
+        },
+        {
+          "ply": 12,
+          "player": "RustEngine",
+          "san": "Bd6",
+          "eval": -114,
+          "cp_loss": 9
+        },
+        {
+          "ply": 13,
+          "player": "Stockfish-2500",
+          "san": "d4",
+          "eval": -168,
+          "cp_loss": 38
+        },
+        {
+          "ply": 14,
+          "player": "RustEngine",
+          "san": "e4",
+          "eval": -198,
+          "cp_loss": 0
+        },
+        {
+          "ply": 15,
+          "player": "Stockfish-2500",
+          "san": "Nfd2",
+          "eval": -183,
+          "cp_loss": 0
+        },
+        {
+          "ply": 16,
+          "player": "RustEngine",
+          "san": "b5",
+          "eval": -99,
+          "cp_loss": 80
+        },
+        {
+          "ply": 17,
+          "player": "Stockfish-2500",
+          "san": "Nb3",
+          "eval": -143,
+          "cp_loss": 44
+        },
+        {
+          "ply": 18,
+          "player": "RustEngine",
+          "san": "O-O",
+          "eval": -143,
+          "cp_loss": 0
+        },
+        {
+          "ply": 19,
+          "player": "Stockfish-2500",
+          "san": "O-O",
+          "eval": -150,
+          "cp_loss": 7
+        },
+        {
+          "ply": 20,
+          "player": "RustEngine",
+          "san": "Be6",
+          "eval": -77,
+          "cp_loss": 98
+        },
+        {
+          "ply": 21,
+          "player": "Stockfish-2500",
+          "san": "Nc5",
+          "eval": -98,
+          "cp_loss": 2
+        },
+        {
+          "ply": 22,
+          "player": "RustEngine",
+          "san": "Bxc5",
+          "eval": -87,
+          "cp_loss": 18
+        },
+        {
+          "ply": 23,
+          "player": "Stockfish-2500",
+          "san": "dxc5",
+          "eval": -85,
+          "cp_loss": 0
+        },
+        {
+          "ply": 24,
+          "player": "RustEngine",
+          "san": "d4",
+          "eval": -64,
+          "cp_loss": 40
+        },
+        {
+          "ply": 25,
+          "player": "Stockfish-2500",
+          "san": "exd4",
+          "eval": -90,
+          "cp_loss": 26
+        },
+        {
+          "ply": 26,
+          "player": "RustEngine",
+          "san": "Nxd4",
+          "eval": -71,
+          "cp_loss": 10
+        },
+        {
+          "ply": 27,
+          "player": "Stockfish-2500",
+          "san": "Nd2",
+          "eval": -120,
+          "cp_loss": 48
+        },
+        {
+          "ply": 28,
+          "player": "RustEngine",
+          "san": "Qd5",
+          "eval": -98,
+          "cp_loss": 22
+        },
+        {
+          "ply": 29,
+          "player": "Stockfish-2500",
+          "san": "Nb3",
+          "eval": -86,
+          "cp_loss": 0
+        },
+        {
+          "ply": 30,
+          "player": "RustEngine",
+          "san": "Nxe2+",
+          "eval": -91,
+          "cp_loss": 0
+        },
+        {
+          "ply": 31,
+          "player": "Stockfish-2500",
+          "san": "Qxe2",
+          "eval": -81,
+          "cp_loss": 0
+        },
+        {
+          "ply": 32,
+          "player": "RustEngine",
+          "san": "Qe5",
+          "eval": -86,
+          "cp_loss": 0
+        },
+        {
+          "ply": 33,
+          "player": "Stockfish-2500",
+          "san": "Qe3",
+          "eval": -85,
+          "cp_loss": 0
+        },
+        {
+          "ply": 34,
+          "player": "RustEngine",
+          "san": "Bc4",
+          "eval": -56,
+          "cp_loss": 27
+        },
+        {
+          "ply": 35,
+          "player": "Stockfish-2500",
+          "san": "Rd1",
+          "eval": -75,
+          "cp_loss": 21
+        },
+        {
+          "ply": 36,
+          "player": "RustEngine",
+          "san": "Rad8",
+          "eval": -75,
+          "cp_loss": 3
+        },
+        {
+          "ply": 37,
+          "player": "Stockfish-2500",
+          "san": "Nd4",
+          "eval": -220,
+          "cp_loss": 145
+        },
+        {
+          "ply": 38,
+          "player": "RustEngine",
+          "san": "Qxc5",
+          "eval": -117,
+          "cp_loss": 0
+        },
+        {
+          "ply": 39,
+          "player": "Stockfish-2500",
+          "san": "h3",
+          "eval": -149,
+          "cp_loss": 32
+        },
+        {
+          "ply": 40,
+          "player": "RustEngine",
+          "san": "Qd6",
+          "eval": -114,
+          "cp_loss": 54
+        },
+        {
+          "ply": 41,
+          "player": "Stockfish-2500",
+          "san": "Qd2",
+          "eval": -220,
+          "cp_loss": 107
+        },
+        {
+          "ply": 42,
+          "player": "RustEngine",
+          "san": "Qb6",
+          "eval": -191,
+          "cp_loss": 29
+        },
+        {
+          "ply": 43,
+          "player": "Stockfish-2500",
+          "san": "b3",
+          "eval": -191,
+          "cp_loss": 0
+        },
+        {
+          "ply": 44,
+          "player": "RustEngine",
+          "san": "Be6",
+          "eval": -181,
+          "cp_loss": 10
+        },
+        {
+          "ply": 45,
+          "player": "Stockfish-2500",
+          "san": "b4",
+          "eval": -185,
+          "cp_loss": 0
+        },
+        {
+          "ply": 46,
+          "player": "RustEngine",
+          "san": "c5",
+          "eval": -90,
+          "cp_loss": 95
+        },
+        {
+          "ply": 47,
+          "player": "Stockfish-2500",
+          "san": "bxc5",
+          "eval": -83,
+          "cp_loss": 0
+        },
+        {
+          "ply": 48,
+          "player": "RustEngine",
+          "san": "Qxc5",
+          "eval": -83,
+          "cp_loss": 0
+        },
+        {
+          "ply": 49,
+          "player": "Stockfish-2500",
+          "san": "a4",
+          "eval": -104,
+          "cp_loss": 21
+        },
+        {
+          "ply": 50,
+          "player": "RustEngine",
+          "san": "b4",
+          "eval": -84,
+          "cp_loss": 0
+        },
+        {
+          "ply": 51,
+          "player": "Stockfish-2500",
+          "san": "Qe3",
+          "eval": -204,
+          "cp_loss": 120
+        },
+        {
+          "ply": 52,
+          "player": "RustEngine",
+          "san": "Bc4",
+          "eval": -133,
+          "cp_loss": 99
+        },
+        {
+          "ply": 53,
+          "player": "Stockfish-2500",
+          "san": "a5",
+          "eval": -204,
+          "cp_loss": 76
+        },
+        {
+          "ply": 54,
+          "player": "RustEngine",
+          "san": "Rfe8",
+          "eval": -204,
+          "cp_loss": 0
+        },
+        {
+          "ply": 55,
+          "player": "Stockfish-2500",
+          "san": "Bb2",
+          "eval": -204,
+          "cp_loss": 13
+        },
+        {
+          "ply": 56,
+          "player": "RustEngine",
+          "san": "Qe5",
+          "eval": -192,
+          "cp_loss": 9
+        },
+        {
+          "ply": 57,
+          "player": "Stockfish-2500",
+          "san": "Qe1",
+          "eval": -163,
+          "cp_loss": 2
+        },
+        {
+          "ply": 58,
+          "player": "RustEngine",
+          "san": "Nd5",
+          "eval": -217,
+          "cp_loss": 0
+        },
+        {
+          "ply": 59,
+          "player": "Stockfish-2500",
+          "san": "Nc6",
+          "eval": -197,
+          "cp_loss": 0
+        },
+        {
+          "ply": 60,
+          "player": "RustEngine",
+          "san": "Qxb2",
+          "eval": -180,
+          "cp_loss": 1
+        }
+      ]
+    }
+  },
+  "2600": {
+    "score": 1.0,
+    "max_score": 2.0,
+    "pct": 50.0,
+    "avg_acpl": 47.56666666666667,
+    "g1": {
+      "target_elo": 2600,
+      "white_is_rust": true,
+      "result": "1/2-1/2 (Move limit reached)",
+      "rust_score": 0.5,
+      "rust_acpl": 19.2,
+      "total_plies": 60,
+      "moves": [
+        {
+          "ply": 1,
+          "player": "RustEngine",
+          "san": "e4",
+          "eval": 32,
+          "cp_loss": 0
+        },
+        {
+          "ply": 2,
+          "player": "Stockfish-2600",
+          "san": "g6",
+          "eval": 67,
+          "cp_loss": 35
+        },
+        {
+          "ply": 3,
+          "player": "RustEngine",
+          "san": "Nc3",
+          "eval": 67,
+          "cp_loss": 0
+        },
+        {
+          "ply": 4,
+          "player": "Stockfish-2600",
+          "san": "c5",
+          "eval": 30,
+          "cp_loss": 6
+        },
+        {
+          "ply": 5,
+          "player": "RustEngine",
+          "san": "Nf3",
+          "eval": 22,
+          "cp_loss": 8
+        },
+        {
+          "ply": 6,
+          "player": "Stockfish-2600",
+          "san": "Bg7",
+          "eval": 24,
+          "cp_loss": 7
+        },
+        {
+          "ply": 7,
+          "player": "RustEngine",
+          "san": "Bc4",
+          "eval": 3,
+          "cp_loss": 27
+        },
+        {
+          "ply": 8,
+          "player": "Stockfish-2600",
+          "san": "Nf6",
+          "eval": 44,
+          "cp_loss": 41
+        },
+        {
+          "ply": 9,
+          "player": "RustEngine",
+          "san": "O-O",
+          "eval": 9,
+          "cp_loss": 35
+        },
+        {
+          "ply": 10,
+          "player": "Stockfish-2600",
+          "san": "d6",
+          "eval": 9,
+          "cp_loss": 5
+        },
+        {
+          "ply": 11,
+          "player": "RustEngine",
+          "san": "d4",
+          "eval": 13,
+          "cp_loss": 0
+        },
+        {
+          "ply": 12,
+          "player": "Stockfish-2600",
+          "san": "cxd4",
+          "eval": 13,
+          "cp_loss": 0
+        },
+        {
+          "ply": 13,
+          "player": "RustEngine",
+          "san": "Nxd4",
+          "eval": 13,
+          "cp_loss": 0
+        },
+        {
+          "ply": 14,
+          "player": "Stockfish-2600",
+          "san": "Bd7",
+          "eval": 24,
+          "cp_loss": 8
+        },
+        {
+          "ply": 15,
+          "player": "RustEngine",
+          "san": "Be3",
+          "eval": 15,
+          "cp_loss": 9
+        },
+        {
+          "ply": 16,
+          "player": "Stockfish-2600",
+          "san": "Nc6",
+          "eval": 14,
+          "cp_loss": 6
+        },
+        {
+          "ply": 17,
+          "player": "RustEngine",
+          "san": "Nf3",
+          "eval": 7,
+          "cp_loss": 1
+        },
+        {
+          "ply": 18,
+          "player": "Stockfish-2600",
+          "san": "O-O",
+          "eval": 9,
+          "cp_loss": 1
+        },
+        {
+          "ply": 19,
+          "player": "RustEngine",
+          "san": "h3",
+          "eval": 20,
+          "cp_loss": 0
+        },
+        {
+          "ply": 20,
+          "player": "Stockfish-2600",
+          "san": "Rb8",
+          "eval": 25,
+          "cp_loss": 10
+        },
+        {
+          "ply": 21,
+          "player": "RustEngine",
+          "san": "Rc1",
+          "eval": -22,
+          "cp_loss": 48
+        },
+        {
+          "ply": 22,
+          "player": "Stockfish-2600",
+          "san": "a6",
+          "eval": 3,
+          "cp_loss": 23
+        },
+        {
+          "ply": 23,
+          "player": "RustEngine",
+          "san": "a3",
+          "eval": 0,
+          "cp_loss": 2
+        },
+        {
+          "ply": 24,
+          "player": "Stockfish-2600",
+          "san": "b5",
+          "eval": 0,
+          "cp_loss": 0
+        },
+        {
+          "ply": 25,
+          "player": "RustEngine",
+          "san": "Bd3",
+          "eval": -10,
+          "cp_loss": 0
+        },
+        {
+          "ply": 26,
+          "player": "Stockfish-2600",
+          "san": "Rc8",
+          "eval": 28,
+          "cp_loss": 35
+        },
+        {
+          "ply": 27,
+          "player": "RustEngine",
+          "san": "Nd5",
+          "eval": 18,
+          "cp_loss": 0
+        },
+        {
+          "ply": 28,
+          "player": "Stockfish-2600",
+          "san": "Ne5",
+          "eval": 30,
+          "cp_loss": 12
+        },
+        {
+          "ply": 29,
+          "player": "RustEngine",
+          "san": "Bb6",
+          "eval": 22,
+          "cp_loss": 6
+        },
+        {
+          "ply": 30,
+          "player": "Stockfish-2600",
+          "san": "Qe8",
+          "eval": 92,
+          "cp_loss": 70
+        },
+        {
+          "ply": 31,
+          "player": "RustEngine",
+          "san": "Nxe5",
+          "eval": 68,
+          "cp_loss": 9
+        },
+        {
+          "ply": 32,
+          "player": "Stockfish-2600",
+          "san": "dxe5",
+          "eval": 67,
+          "cp_loss": 0
+        },
+        {
+          "ply": 33,
+          "player": "RustEngine",
+          "san": "Nxf6+",
+          "eval": 26,
+          "cp_loss": 41
+        },
+        {
+          "ply": 34,
+          "player": "Stockfish-2600",
+          "san": "exf6",
+          "eval": 29,
+          "cp_loss": 0
+        },
+        {
+          "ply": 35,
+          "player": "RustEngine",
+          "san": "c4",
+          "eval": 28,
+          "cp_loss": 1
+        },
+        {
+          "ply": 36,
+          "player": "Stockfish-2600",
+          "san": "Qe6",
+          "eval": 71,
+          "cp_loss": 43
+        },
+        {
+          "ply": 37,
+          "player": "RustEngine",
+          "san": "c5",
+          "eval": 73,
+          "cp_loss": 3
+        },
+        {
+          "ply": 38,
+          "player": "Stockfish-2600",
+          "san": "f5",
+          "eval": 91,
+          "cp_loss": 18
+        },
+        {
+          "ply": 39,
+          "player": "RustEngine",
+          "san": "exf5",
+          "eval": -10,
+          "cp_loss": 101
+        },
+        {
+          "ply": 40,
+          "player": "Stockfish-2600",
+          "san": "Qe7",
+          "eval": 270,
+          "cp_loss": 280
+        },
+        {
+          "ply": 41,
+          "player": "RustEngine",
+          "san": "fxg6",
+          "eval": 227,
+          "cp_loss": 42
+        },
+        {
+          "ply": 42,
+          "player": "Stockfish-2600",
+          "san": "hxg6",
+          "eval": 238,
+          "cp_loss": 11
+        },
+        {
+          "ply": 43,
+          "player": "RustEngine",
+          "san": "Be4",
+          "eval": 239,
+          "cp_loss": 0
+        },
+        {
+          "ply": 44,
+          "player": "Stockfish-2600",
+          "san": "Bf5",
+          "eval": 355,
+          "cp_loss": 116
+        },
+        {
+          "ply": 45,
+          "player": "RustEngine",
+          "san": "Bxf5",
+          "eval": 348,
+          "cp_loss": 7
+        },
+        {
+          "ply": 46,
+          "player": "Stockfish-2600",
+          "san": "gxf5",
+          "eval": 327,
+          "cp_loss": 0
+        },
+        {
+          "ply": 47,
+          "player": "RustEngine",
+          "san": "Qd6",
+          "eval": 277,
+          "cp_loss": 50
+        },
+        {
+          "ply": 48,
+          "player": "Stockfish-2600",
+          "san": "Rfe8",
+          "eval": 338,
+          "cp_loss": 36
+        },
+        {
+          "ply": 49,
+          "player": "RustEngine",
+          "san": "Qxe7",
+          "eval": 288,
+          "cp_loss": 13
+        },
+        {
+          "ply": 50,
+          "player": "Stockfish-2600",
+          "san": "Rxe7",
+          "eval": 282,
+          "cp_loss": 0
+        },
+        {
+          "ply": 51,
+          "player": "RustEngine",
+          "san": "b4",
+          "eval": 231,
+          "cp_loss": 51
+        },
+        {
+          "ply": 52,
+          "player": "Stockfish-2600",
+          "san": "Kh7",
+          "eval": 255,
+          "cp_loss": 24
+        },
+        {
+          "ply": 53,
+          "player": "RustEngine",
+          "san": "Rcd1",
+          "eval": 204,
+          "cp_loss": 57
+        },
+        {
+          "ply": 54,
+          "player": "Stockfish-2600",
+          "san": "f4",
+          "eval": 243,
+          "cp_loss": 55
+        },
+        {
+          "ply": 55,
+          "player": "RustEngine",
+          "san": "Bd8",
+          "eval": 188,
+          "cp_loss": 55
+        },
+        {
+          "ply": 56,
+          "player": "Stockfish-2600",
+          "san": "Re6",
+          "eval": 322,
+          "cp_loss": 134
+        },
+        {
+          "ply": 57,
+          "player": "RustEngine",
+          "san": "Rd7",
+          "eval": 286,
+          "cp_loss": 0
+        },
+        {
+          "ply": 58,
+          "player": "Stockfish-2600",
+          "san": "Ra8",
+          "eval": 391,
+          "cp_loss": 115
+        },
+        {
+          "ply": 59,
+          "player": "RustEngine",
+          "san": "Rfd1",
+          "eval": 376,
+          "cp_loss": 10
+        },
+        {
+          "ply": 60,
+          "player": "Stockfish-2600",
+          "san": "Kg6",
+          "eval": 393,
+          "cp_loss": 0
+        }
+      ]
+    },
+    "g2": {
+      "target_elo": 2600,
+      "white_is_rust": false,
+      "result": "1/2-1/2 (Move limit reached)",
+      "rust_score": 0.5,
+      "rust_acpl": 75.93333333333334,
+      "total_plies": 60,
+      "moves": [
+        {
+          "ply": 1,
+          "player": "Stockfish-2600",
+          "san": "d4",
+          "eval": 14,
+          "cp_loss": 17
+        },
+        {
+          "ply": 2,
+          "player": "RustEngine",
+          "san": "d5",
+          "eval": 17,
+          "cp_loss": 1
+        },
+        {
+          "ply": 3,
+          "player": "Stockfish-2600",
+          "san": "c3",
+          "eval": 8,
+          "cp_loss": 8
+        },
+        {
+          "ply": 4,
+          "player": "RustEngine",
+          "san": "Bf5",
+          "eval": 13,
+          "cp_loss": 5
+        },
+        {
+          "ply": 5,
+          "player": "Stockfish-2600",
+          "san": "Qb3",
+          "eval": 10,
+          "cp_loss": 7
+        },
+        {
+          "ply": 6,
+          "player": "RustEngine",
+          "san": "e6",
+          "eval": 10,
+          "cp_loss": 0
+        },
+        {
+          "ply": 7,
+          "player": "Stockfish-2600",
+          "san": "Qxb7",
+          "eval": 9,
+          "cp_loss": 1
+        },
+        {
+          "ply": 8,
+          "player": "RustEngine",
+          "san": "Nd7",
+          "eval": 6,
+          "cp_loss": 0
+        },
+        {
+          "ply": 9,
+          "player": "Stockfish-2600",
+          "san": "Bf4",
+          "eval": 5,
+          "cp_loss": 3
+        },
+        {
+          "ply": 10,
+          "player": "RustEngine",
+          "san": "Rb8",
+          "eval": 57,
+          "cp_loss": 22
+        },
+        {
+          "ply": 11,
+          "player": "Stockfish-2600",
+          "san": "Qxa7",
+          "eval": 23,
+          "cp_loss": 32
+        },
+        {
+          "ply": 12,
+          "player": "RustEngine",
+          "san": "Rxb2",
+          "eval": 104,
+          "cp_loss": 28
+        },
+        {
+          "ply": 13,
+          "player": "Stockfish-2600",
+          "san": "e4",
+          "eval": 75,
+          "cp_loss": 20
+        },
+        {
+          "ply": 14,
+          "player": "RustEngine",
+          "san": "e5",
+          "eval": 92,
+          "cp_loss": 6
+        },
+        {
+          "ply": 15,
+          "player": "Stockfish-2600",
+          "san": "exf5",
+          "eval": 12,
+          "cp_loss": 80
+        },
+        {
+          "ply": 16,
+          "player": "RustEngine",
+          "san": "exf4",
+          "eval": 30,
+          "cp_loss": 18
+        },
+        {
+          "ply": 17,
+          "player": "Stockfish-2600",
+          "san": "Nd2",
+          "eval": 7,
+          "cp_loss": 20
+        },
+        {
+          "ply": 18,
+          "player": "RustEngine",
+          "san": "Rc2",
+          "eval": 122,
+          "cp_loss": 104
+        },
+        {
+          "ply": 19,
+          "player": "Stockfish-2600",
+          "san": "Qa4",
+          "eval": -8,
+          "cp_loss": 113
+        },
+        {
+          "ply": 20,
+          "player": "RustEngine",
+          "san": "Rxc3",
+          "eval": -5,
+          "cp_loss": 0
+        },
+        {
+          "ply": 21,
+          "player": "Stockfish-2600",
+          "san": "Ngf3",
+          "eval": -2,
+          "cp_loss": 0
+        },
+        {
+          "ply": 22,
+          "player": "RustEngine",
+          "san": "c5",
+          "eval": 330,
+          "cp_loss": 332
+        },
+        {
+          "ply": 23,
+          "player": "Stockfish-2600",
+          "san": "Ne5",
+          "eval": 281,
+          "cp_loss": 87
+        },
+        {
+          "ply": 24,
+          "player": "RustEngine",
+          "san": "Nf6",
+          "eval": 335,
+          "cp_loss": 54
+        },
+        {
+          "ply": 25,
+          "player": "Stockfish-2600",
+          "san": "Bb5",
+          "eval": 317,
+          "cp_loss": 17
+        },
+        {
+          "ply": 26,
+          "player": "RustEngine",
+          "san": "Bd6",
+          "eval": 448,
+          "cp_loss": 88
+        },
+        {
+          "ply": 27,
+          "player": "Stockfish-2600",
+          "san": "O-O",
+          "eval": 448,
+          "cp_loss": 0
+        },
+        {
+          "ply": 28,
+          "player": "RustEngine",
+          "san": "cxd4",
+          "eval": 705,
+          "cp_loss": 257
+        },
+        {
+          "ply": 29,
+          "player": "Stockfish-2600",
+          "san": "Nxd7",
+          "eval": 639,
+          "cp_loss": 9
+        },
+        {
+          "ply": 30,
+          "player": "RustEngine",
+          "san": "Nxd7",
+          "eval": 569,
+          "cp_loss": 0
+        },
+        {
+          "ply": 31,
+          "player": "Stockfish-2600",
+          "san": "Rfe1+",
+          "eval": 624,
+          "cp_loss": 33
+        },
+        {
+          "ply": 32,
+          "player": "RustEngine",
+          "san": "Re3",
+          "eval": 684,
+          "cp_loss": 84
+        },
+        {
+          "ply": 33,
+          "player": "Stockfish-2600",
+          "san": "fxe3",
+          "eval": 688,
+          "cp_loss": 0
+        },
+        {
+          "ply": 34,
+          "player": "RustEngine",
+          "san": "dxe3",
+          "eval": 728,
+          "cp_loss": 2
+        },
+        {
+          "ply": 35,
+          "player": "Stockfish-2600",
+          "san": "Nf3",
+          "eval": 636,
+          "cp_loss": 72
+        },
+        {
+          "ply": 36,
+          "player": "RustEngine",
+          "san": "Ke7",
+          "eval": 768,
+          "cp_loss": 53
+        },
+        {
+          "ply": 37,
+          "player": "Stockfish-2600",
+          "san": "Rac1",
+          "eval": 803,
+          "cp_loss": 0
+        },
+        {
+          "ply": 38,
+          "player": "RustEngine",
+          "san": "Nf6",
+          "eval": 750,
+          "cp_loss": 38
+        },
+        {
+          "ply": 39,
+          "player": "Stockfish-2600",
+          "san": "Nd4",
+          "eval": 717,
+          "cp_loss": 47
+        },
+        {
+          "ply": 40,
+          "player": "RustEngine",
+          "san": "Qb6",
+          "eval": 760,
+          "cp_loss": 21
+        },
+        {
+          "ply": 41,
+          "player": "Stockfish-2600",
+          "san": "Nc6+",
+          "eval": 716,
+          "cp_loss": 15
+        },
+        {
+          "ply": 42,
+          "player": "RustEngine",
+          "san": "Kd7",
+          "eval": 792,
+          "cp_loss": 63
+        },
+        {
+          "ply": 43,
+          "player": "Stockfish-2600",
+          "san": "Nd4+",
+          "eval": 788,
+          "cp_loss": 0
+        },
+        {
+          "ply": 44,
+          "player": "RustEngine",
+          "san": "Ke7",
+          "eval": 712,
+          "cp_loss": 0
+        },
+        {
+          "ply": 45,
+          "player": "Stockfish-2600",
+          "san": "Nc6+",
+          "eval": 649,
+          "cp_loss": 66
+        },
+        {
+          "ply": 46,
+          "player": "RustEngine",
+          "san": "Kd7",
+          "eval": 824,
+          "cp_loss": 169
+        },
+        {
+          "ply": 47,
+          "player": "Stockfish-2600",
+          "san": "Kh1",
+          "eval": 698,
+          "cp_loss": 101
+        },
+        {
+          "ply": 48,
+          "player": "RustEngine",
+          "san": "Bc5",
+          "eval": 698,
+          "cp_loss": 0
+        },
+        {
+          "ply": 49,
+          "player": "Stockfish-2600",
+          "san": "Nb4+",
+          "eval": 698,
+          "cp_loss": 0
+        },
+        {
+          "ply": 50,
+          "player": "RustEngine",
+          "san": "Ke7",
+          "eval": 810,
+          "cp_loss": 111
+        },
+        {
+          "ply": 51,
+          "player": "Stockfish-2600",
+          "san": "Nc6+",
+          "eval": 767,
+          "cp_loss": 0
+        },
+        {
+          "ply": 52,
+          "player": "RustEngine",
+          "san": "Kd7",
+          "eval": 767,
+          "cp_loss": 120
+        },
+        {
+          "ply": 53,
+          "player": "Stockfish-2600",
+          "san": "Red1",
+          "eval": 759,
+          "cp_loss": 0
+        },
+        {
+          "ply": 54,
+          "player": "RustEngine",
+          "san": "h6",
+          "eval": 864,
+          "cp_loss": 142
+        },
+        {
+          "ply": 55,
+          "player": "Stockfish-2600",
+          "san": "Rb1",
+          "eval": 782,
+          "cp_loss": 24
+        },
+        {
+          "ply": 56,
+          "player": "RustEngine",
+          "san": "f3",
+          "eval": 865,
+          "cp_loss": 103
+        },
+        {
+          "ply": 57,
+          "player": "Stockfish-2600",
+          "san": "gxf3",
+          "eval": 877,
+          "cp_loss": 0
+        },
+        {
+          "ply": 58,
+          "player": "RustEngine",
+          "san": "Kc7",
+          "eval": 984,
+          "cp_loss": 261
+        },
+        {
+          "ply": 59,
+          "player": "Stockfish-2600",
+          "san": "Nb4",
+          "eval": 891,
+          "cp_loss": 18
+        },
+        {
+          "ply": 60,
+          "player": "RustEngine",
+          "san": "Bxb4",
+          "eval": 990,
+          "cp_loss": 196
+        }
+      ]
+    }
+  }
+}
