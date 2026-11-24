@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Chess Engine — Super-Grandmaster (2850 Elo)</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <header class="navbar">
+            <div class="brand">
+                <div class="logo-icon">♞</div>
+                <div class="brand-text">
+                    <h1>RUST CHESS <span class="badge-elo">2850 ELO</span></h1>
+                    <span class="subtitle">Super-Grandmaster Engine & Analysis</span>
+                </div>
+            </div>
+            <div class="nav-controls">
+                <div class="game-status-chip" id="statusChip">
+                    <span class="status-dot"></span>
+                    <span id="statusText">White to move</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="main-layout">
+            <!-- Left: Evaluation Bar & Board Section -->
+            <section class="board-section">
+                <!-- Evaluation Bar -->
+                <div class="eval-bar-container" id="evalBarContainer">
+                    <div class="eval-bar">
+                        <div class="eval-white" id="evalWhite"></div>
+                        <div class="eval-black" id="evalBlack"></div>
+                    </div>
+                    <div class="eval-badge" id="evalBadge">+0.0</div>
+                </div>
+
+                <!-- Chessboard Wrapper -->
+                <div class="board-wrapper">
+                    <div class="chessboard" id="chessboard">
+                        <!-- 64 squares rendered dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right: Analysis, History & Controls -->
+            <aside class="sidebar">
+                <!-- MultiPV Top 3 Lines Panel -->
+                <div class="panel analysis-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <span class="pulse-indicator"></span>
+                            <h2>ENGINE ANALYSIS (MultiPV 3)</h2>
+                        </div>
+                        <span class="depth-badge" id="analysisDepth">Depth 8</span>
+                    </div>
+                    <div class="lines-container" id="linesContainer">
+                        <div class="pv-card" id="pvCard1">
+                            <div class="pv-header">
+                                <span class="pv-rank rank-1">#1 Best</span>
+                                <span class="pv-score score-pos" id="pvScore1">+0.2</span>
+                            </div>
+                            <div class="pv-moves" id="pvMoves1">Calculating...</div>
+                        </div>
+                        <div class="pv-card" id="pvCard2">
+                            <div class="pv-header">
+                                <span class="pv-rank rank-2">#2 Alt</span>
+                                <span class="pv-score" id="pvScore2">0.0</span>
+                            </div>
+                            <div class="pv-moves" id="pvMoves2">Calculating...</div>
+                        </div>
+                        <div class="pv-card" id="pvCard3">
+                            <div class="pv-header">
+                                <span class="pv-rank rank-3">#3 Alt</span>
+                                <span class="pv-score score-neg" id="pvScore3">-0.1</span>
+                            </div>
+                            <div class="pv-moves" id="pvMoves3">Calculating...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Controls & Modes -->
+                <div class="panel controls-panel">
+                    <div class="mode-select-grid">
+                        <button class="mode-btn active" data-mode="bot" id="modeBtnBot">Play vs Bot</button>
+                        <button class="mode-btn" data-mode="pvp" id="modeBtnPvp">Pass & Play</button>
+                        <button class="mode-btn" data-mode="bvb" id="modeBtnBvb">Bot vs Bot</button>
+                    </div>
+
+                    <div class="bot-settings" id="botSettings">
+                        <div class="setting-row">
+                            <label>Bot Side</label>
+                            <div class="side-toggle">
+                                <button class="side-btn active" id="playWhiteBtn">Play White</button>
+                                <button class="side-btn" id="playBlackBtn">Play Black</button>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label>Engine Depth <span class="slider-val" id="depthVal">6</span></label>
+                            <input type="range" min="1" max="12" value="6" id="depthSlider" class="depth-slider">
+                        </div>
+                    </div>
+
+                    <div class="action-buttons-grid">
+                        <button class="btn btn-primary" id="newGameBtn">New Game</button>
+                        <button class="btn btn-secondary" id="undoBtn">Undo</button>
+                        <button class="btn btn-secondary" id="flipBtn">Flip Board</button>
+                        <button class="btn btn-secondary" id="hintBtn">Hint</button>
+                    </div>
+
+                    <div class="fen-box">
+                        <input type="text" id="fenInput" placeholder="FEN string..." readonly>
+                        <button class="btn-copy" id="copyFenBtn" title="Copy FEN">📋</button>
+                    </div>
+                </div>
+
+                <!-- Move History -->
+                <div class="panel history-panel">
+                    <div class="panel-header">
+                        <h2>MOVE HISTORY</h2>
+                        <span class="move-count" id="moveCount">0 moves</span>
+                    </div>
+                    <div class="history-list-wrapper">
+                        <table class="history-table" id="historyTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>White</th>
+                                    <th>Black</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyBody">
+                                <!-- moves populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Promotion Modal -->
+    <div class="modal-overlay" id="promotionModal">
+        <div class="modal-content">
+            <h3>Promote Pawn</h3>
+            <div class="promo-choices" id="promoChoices">
+                <button class="promo-btn" data-piece="q">♛ Queen</button>
+                <button class="promo-btn" data-piece="r">♜ Rook</button>
+                <button class="promo-btn" data-piece="b">♝ Bishop</button>
+                <button class="promo-btn" data-piece="n">♞ Knight</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

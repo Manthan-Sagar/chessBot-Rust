@@ -59,6 +59,7 @@ pub struct Searcher {
     pub pv_length: [usize; MAX_PLY],
     pub follow_pv: bool,
     pub score_pv: bool,
+    pub multipv: usize,
 }
 
 impl Searcher {
@@ -84,6 +85,7 @@ impl Searcher {
             pv_length: [0; MAX_PLY],
             follow_pv: false,
             score_pv: false,
+            multipv: 1,
         }
     }
 
@@ -665,6 +667,159 @@ impl Searcher {
         self.counter_moves = [[Move::NULL; 64]; 12];
         self.pv_table = [[Move::NULL; MAX_PLY]; MAX_PLY];
         self.pv_length = [0; MAX_PLY];
+
+        if self.multipv > 1 {
+            let mut root_moves = MoveList::new();
+            generate_moves(board, attack_tables, &mut root_moves);
+
+            let mut legal_root_moves = Vec::new();
+            let state = board.save_state();
+            for i in 0..root_moves.count {
+                let m = root_moves.get(i);
+                if make_move(board, m, MoveFlag::AllMoves, attack_tables, zobrist) {
+                    board.restore_state(&state);
+                    legal_root_moves.push(m);
+                }
+            }
+
+            if legal_root_moves.is_empty() {
+                let king_sq = if board.side == Color::White {
+                    get_ls1b_index(board.bitboards[Piece::K as usize]).unwrap_or(60)
+                } else {
+                    get_ls1b_index(board.bitboards[Piece::KingBlack as usize]).unwrap_or(4)
+                };
+                if attack_tables.is_square_attacked(
+                    king_sq,
+                    board.side.opposite(),
+                    &board.bitboards,
+                    board.occupancies[Color::Both as usize],
+                ) {
+                    println!("info score mate 0 depth 0");
+                } else {
+                    println!("info score cp 0 depth 0");
+                }
+                println!("bestmove (none)");
+                return None;
+            }
+
+            let pv_count = self.multipv.min(legal_root_moves.len());
+            let mut multi_best_moves = vec![legal_root_moves[0]; pv_count];
+            let mut best_move = None;
+            let mut current_depth = 1;
+
+            while current_depth <= max_depth {
+                if self.stopped.load(Ordering::Relaxed) {
+                    break;
+                }
+
+                let mut excluded_moves: Vec<Move> = Vec::new();
+                let mut current_pv_results = Vec::new();
+
+                for pv_idx in 0..pv_count {
+                    if self.stopped.load(Ordering::Relaxed) {
+                        break;
+                    }
+
+                    let mut best_score = -INFINITY;
+                    let mut best_m = Move::NULL;
+                    let mut best_pv = Vec::new();
+
+                    let mut candidate_moves = legal_root_moves.clone();
+                    let prev_fav = multi_best_moves[pv_idx];
+                    candidate_moves.sort_by_cached_key(|&m| {
+                        if m == prev_fav {
+                            -1000000
+                        } else {
+                            -self.score_move(board, m, 0, None, None, attack_tables)
+                        }
+                    });
+
+                    for &m in &candidate_moves {
+                        if excluded_moves.contains(&m) {
+                            continue;
+                        }
+                        if self.stopped.load(Ordering::Relaxed) {
+                            break;
+                        }
+
+                        let move_state = board.save_state();
+                        board.repetition_index += 1;
+                        board.repetition_table[board.repetition_index] = board.hash_key;
+                        make_move(board, m, MoveFlag::AllMoves, attack_tables, zobrist);
+
+                        let score = -self.negamax(
+                            -INFINITY,
+                            INFINITY,
+                            (current_depth as i32) - 1,
+                            board,
+                            attack_tables,
+                            masks,
+                            zobrist,
+                            tt,
+                            Some(m),
+                        );
+
+                        board.restore_state(&move_state);
+
+                        if score > best_score {
+                            best_score = score;
+                            best_m = m;
+                            let mut pv = vec![m];
+                            for i in 1..self.pv_length[1] {
+                                pv.push(self.pv_table[1][i]);
+                            }
+                            best_pv = pv;
+                        }
+                    }
+
+                    if best_m != Move::NULL {
+                        excluded_moves.push(best_m);
+                        multi_best_moves[pv_idx] = best_m;
+                        current_pv_results.push((pv_idx + 1, best_score, best_pv));
+                    }
+                }
+
+                if self.stopped.load(Ordering::Relaxed) {
+                    break;
+                }
+
+                let elapsed_ms = self.start_time.elapsed().as_millis().max(1) as u64;
+                let nps = (self.nodes as f64 / (elapsed_ms as f64 / 1000.0)) as u64;
+
+                for (pv_num, score, pv) in &current_pv_results {
+                    let pv_str = pv.iter().map(|m| m.to_uci()).collect::<Vec<_>>().join(" ");
+                    if *score > -MATE_VALUE && *score < -MATE_SCORE {
+                        let mate_in = -(*score + MATE_VALUE) / 2 - 1;
+                        println!(
+                            "info depth {} multipv {} score mate {} nodes {} time {} nps {} pv {}",
+                            current_depth, pv_num, mate_in, self.nodes, elapsed_ms, nps, pv_str
+                        );
+                    } else if *score > MATE_SCORE && *score < MATE_VALUE {
+                        let mate_in = (MATE_VALUE - *score) / 2 + 1;
+                        println!(
+                            "info depth {} multipv {} score mate {} nodes {} time {} nps {} pv {}",
+                            current_depth, pv_num, mate_in, self.nodes, elapsed_ms, nps, pv_str
+                        );
+                    } else {
+                        println!(
+                            "info depth {} multipv {} score cp {} nodes {} time {} nps {} pv {}",
+                            current_depth, pv_num, score, self.nodes, elapsed_ms, nps, pv_str
+                        );
+                    }
+                }
+
+                best_move = Some(multi_best_moves[0]);
+                current_depth += 1;
+            }
+
+            if let Some(m) = best_move {
+                println!("bestmove {}", m.to_uci());
+            } else {
+                println!("bestmove {}", legal_root_moves[0].to_uci());
+            }
+
+            return best_move;
+        }
 
         let mut current_depth = 1;
         let mut alpha = -INFINITY;

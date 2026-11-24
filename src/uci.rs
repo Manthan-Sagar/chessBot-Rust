@@ -22,6 +22,7 @@ pub struct UciEngine {
     pub zobrist: ZobristKeys,
     pub tt: TranspositionTable,
     pub stopped: Arc<AtomicBool>,
+    pub multipv: usize,
 }
 
 impl UciEngine {
@@ -41,6 +42,7 @@ impl UciEngine {
             zobrist,
             tt,
             stopped,
+            multipv: 1,
         }
     }
 
@@ -208,6 +210,7 @@ impl UciEngine {
         }
 
         let mut searcher = Searcher::new(self.stopped.clone());
+        searcher.multipv = self.multipv;
         searcher.search_position(
             max_depth,
             &limits,
@@ -228,12 +231,20 @@ impl UciEngine {
         if trimmed == "uci" {
             println!("id name chess-engine");
             println!("id author Antigravity");
+            println!("option name MultiPV type spin default 1 min 1 max 5");
             println!("uciok");
         } else if trimmed == "isready" {
             println!("readyok");
         } else if trimmed == "ucinewgame" {
             self.tt.clear();
             self.board.parse_fen(START_POSITION, &self.zobrist);
+        } else if trimmed.to_lowercase().starts_with("setoption name multipv value") {
+            let parts: Vec<&str> = trimmed.split_whitespace().collect();
+            if let Some(val_str) = parts.last() {
+                if let Ok(val) = val_str.parse::<usize>() {
+                    self.multipv = val.clamp(1, 5);
+                }
+            }
         } else if trimmed.starts_with("position") {
             self.parse_position(trimmed);
         } else if trimmed.starts_with("go") {
