@@ -108,6 +108,7 @@ class ChessGame {
 
         this.initDOM();
         this.loadFen(START_FEN);
+        this.render();
         this.attachEvents();
         this.triggerAnalysis();
     }
