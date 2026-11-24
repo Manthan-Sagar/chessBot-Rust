@@ -52,6 +52,8 @@ pub struct Searcher {
     pub time_limit_ms: Option<u64>,
     pub killer_moves: [[Move; MAX_PLY]; 2],
     pub history_moves: [[i32; 64]; 12],
+    pub counter_moves: [[Move; 64]; 12],
+    pub lmr_table: [[i32; 64]; 64],
     pub pv_table: [[Move; MAX_PLY]; MAX_PLY],
     pub pv_length: [usize; MAX_PLY],
     pub follow_pv: bool,
@@ -60,6 +62,14 @@ pub struct Searcher {
 
 impl Searcher {
     pub fn new(stopped: Arc<AtomicBool>) -> Self {
+        let mut lmr_table = [[0i32; 64]; 64];
+        for d in 1..64 {
+            for m in 1..64 {
+                let red = (0.75 + (d as f64).ln() * (m as f64).ln() / 2.25) as i32;
+                lmr_table[d][m] = red.max(1);
+            }
+        }
+
         Self {
             nodes: 0,
             stopped,
@@ -67,6 +77,8 @@ impl Searcher {
             time_limit_ms: None,
             killer_moves: [[Move::NULL; MAX_PLY]; 2],
             history_moves: [[0; 64]; 12],
+            counter_moves: [[Move::NULL; 64]; 12],
+            lmr_table,
             pv_table: [[Move::NULL; MAX_PLY]; MAX_PLY],
             pv_length: [0; MAX_PLY],
             follow_pv: false,
@@ -94,6 +106,7 @@ impl Searcher {
         m: Move,
         ply: usize,
         tt_move: Option<Move>,
+        prev_move: Option<Move>,
     ) -> i32 {
         if self.score_pv && ply < MAX_PLY && self.pv_table[0][ply] == m {
             return 20000;
@@ -132,6 +145,13 @@ impl Searcher {
             }
         }
 
+        // Countermove heuristic
+        if let Some(prev) = prev_move {
+            if self.counter_moves[prev.piece() as usize][prev.target()] == m {
+                return 7000;
+            }
+        }
+
         self.history_moves[m.piece() as usize][m.target()]
     }
 
@@ -141,10 +161,11 @@ impl Searcher {
         move_list: &mut MoveList,
         ply: usize,
         tt_move: Option<Move>,
+        prev_move: Option<Move>,
     ) {
         let mut scores = [0i32; 256];
         for i in 0..move_list.count {
-            scores[i] = self.score_move(board, move_list.get(i), ply, tt_move);
+            scores[i] = self.score_move(board, move_list.get(i), ply, tt_move, prev_move);
         }
 
         for i in 0..move_list.count {
@@ -186,14 +207,54 @@ impl Searcher {
             alpha = eval;
         }
 
+        let king_sq = if board.side == Color::White {
+            get_ls1b_index(board.bitboards[Piece::K as usize]).unwrap()
+        } else {
+            get_ls1b_index(board.bitboards[Piece::KingBlack as usize]).unwrap()
+        };
+        let in_check = attack_tables.is_square_attacked(
+            king_sq,
+            board.side.opposite(),
+            &board.bitboards,
+            board.occupancies[Color::Both as usize],
+        );
+
         let mut move_list = MoveList::new();
         generate_moves(board, attack_tables, &mut move_list);
-        self.sort_moves(board, &mut move_list, board.ply, None);
+        self.sort_moves(board, &mut move_list, board.ply, None, None);
 
         let state = board.save_state();
 
         for i in 0..move_list.count {
             let m = move_list.get(i);
+
+            // Delta pruning: skip quiet/low-value captures unable to raise alpha
+            if !in_check && m.promoted().is_none() {
+                let target_sq = m.target();
+                let mut victim_val = 100;
+                let (start_p, end_p) = if board.side == Color::White {
+                    (Piece::PawnBlack as usize, Piece::QueenBlack as usize)
+                } else {
+                    (Piece::P as usize, Piece::Q as usize)
+                };
+                for p in start_p..=end_p {
+                    if get_bit(board.bitboards[p], target_sq) {
+                        victim_val = match p {
+                            0 | 6 => 100,
+                            1 | 7 => 320,
+                            2 | 8 => 330,
+                            3 | 9 => 500,
+                            4 | 10 => 900,
+                            _ => 100,
+                        };
+                        break;
+                    }
+                }
+                if eval + victim_val + 200 < alpha {
+                    continue;
+                }
+            }
+
             board.ply += 1;
             board.repetition_index += 1;
             board.repetition_table[board.repetition_index] = board.hash_key;
@@ -235,6 +296,7 @@ impl Searcher {
         masks: &EvalMasks,
         zobrist: &ZobristKeys,
         tt: &mut TranspositionTable,
+        prev_move: Option<Move>,
     ) -> i32 {
         if board.ply < MAX_PLY {
             self.pv_length[board.ply] = board.ply;
@@ -260,7 +322,7 @@ impl Searcher {
             return 0;
         }
 
-        if depth == 0 {
+        if depth <= 0 {
             return self.quiescence(alpha, beta, board, attack_tables, masks, zobrist);
         }
 
@@ -287,6 +349,20 @@ impl Searcher {
             depth += 1;
         }
 
+        // Static evaluation (used for RFP and Futility Pruning)
+        let static_eval = if !in_check {
+            evaluate(board, attack_tables, masks)
+        } else {
+            -INFINITY
+        };
+
+        // Reverse Futility Pruning (Static Null Move Pruning)
+        if depth <= 3 && !in_check && !pv_node && board.ply > 0 {
+            if static_eval - 120 * depth >= beta {
+                return beta;
+            }
+        }
+
         // Null move pruning
         if depth >= 3 && !in_check && board.ply > 0 {
             let state = board.save_state();
@@ -310,6 +386,7 @@ impl Searcher {
                 masks,
                 zobrist,
                 tt,
+                None,
             );
 
             board.ply -= 1;
@@ -339,7 +416,7 @@ impl Searcher {
             }
         }
 
-        self.sort_moves(board, &mut move_list, board.ply, tt_move);
+        self.sort_moves(board, &mut move_list, board.ply, tt_move, prev_move);
 
         let mut legal_moves = 0;
         let mut moves_searched = 0;
@@ -349,6 +426,20 @@ impl Searcher {
 
         for i in 0..move_list.count {
             let m = move_list.get(i);
+
+            // Futility Pruning for quiet moves at shallow depth
+            if depth <= 2
+                && !in_check
+                && !pv_node
+                && !m.is_capture()
+                && m.promoted().is_none()
+                && legal_moves > 0
+                && alpha < MATE_SCORE
+                && static_eval + 150 * depth <= alpha
+            {
+                continue;
+            }
+
             board.ply += 1;
             board.repetition_index += 1;
             board.repetition_table[board.repetition_index] = board.hash_key;
@@ -373,24 +464,32 @@ impl Searcher {
                     masks,
                     zobrist,
                     tt,
+                    Some(m),
                 );
             } else {
-                // Late Move Reduction (LMR)
+                // Late Move Reduction (LMR) using precomputed logarithmic table
                 if moves_searched >= FULL_DEPTH_MOVES
                     && depth >= REDUCTION_LIMIT
                     && !in_check
                     && !m.is_capture()
                     && m.promoted().is_none()
                 {
+                    let reduction = if depth <= 5 {
+                        1
+                    } else {
+                        self.lmr_table[(depth as usize).min(63)][moves_searched.min(63)]
+                            .clamp(1, depth - 3)
+                    };
                     score = -self.negamax(
                         -alpha - 1,
                         -alpha,
-                        depth - 2,
+                        depth - 1 - reduction,
                         board,
                         attack_tables,
                         masks,
                         zobrist,
                         tt,
+                        Some(m),
                     );
                 } else {
                     score = alpha + 1;
@@ -407,6 +506,7 @@ impl Searcher {
                         masks,
                         zobrist,
                         tt,
+                        Some(m),
                     );
 
                     if score > alpha && score < beta {
@@ -419,6 +519,7 @@ impl Searcher {
                             masks,
                             zobrist,
                             tt,
+                            Some(m),
                         );
                     }
                 }
@@ -454,9 +555,14 @@ impl Searcher {
                 // Beta cutoff
                 if score >= beta {
                     tt.write(board.hash_key, beta, depth, HASH_FLAG_BETA, board.ply, Some(m));
-                    if !m.is_capture() && board.ply < MAX_PLY {
-                        self.killer_moves[1][board.ply] = self.killer_moves[0][board.ply];
-                        self.killer_moves[0][board.ply] = m;
+                    if !m.is_capture() {
+                        if board.ply < MAX_PLY {
+                            self.killer_moves[1][board.ply] = self.killer_moves[0][board.ply];
+                            self.killer_moves[0][board.ply] = m;
+                        }
+                        if let Some(prev) = prev_move {
+                            self.counter_moves[prev.piece() as usize][prev.target()] = m;
+                        }
                     }
                     return beta;
                 }
@@ -493,10 +599,10 @@ impl Searcher {
         if let Some(movetime) = limits.movetime {
             self.time_limit_ms = Some(movetime);
         } else if let Some(time) = limits.time {
-            let moves_to_go = limits.movestogo.unwrap_or(30) as u64;
+            let moves_to_go = (limits.movestogo.unwrap_or(30) as u64).clamp(10, 50);
             let time_alloc = (time / moves_to_go) + (limits.inc * 3 / 4);
             // Safety margin
-            self.time_limit_ms = Some(time_alloc.min(time.saturating_sub(50)));
+            self.time_limit_ms = Some(time_alloc.min(time.saturating_sub(30)));
         } else {
             self.time_limit_ms = None;
         }
@@ -505,6 +611,7 @@ impl Searcher {
         self.score_pv = false;
         self.killer_moves = [[Move::NULL; MAX_PLY]; 2];
         self.history_moves = [[0; 64]; 12];
+        self.counter_moves = [[Move::NULL; 64]; 12];
         self.pv_table = [[Move::NULL; MAX_PLY]; MAX_PLY];
         self.pv_length = [0; MAX_PLY];
 
@@ -528,6 +635,7 @@ impl Searcher {
                 masks,
                 zobrist,
                 tt,
+                None,
             );
 
             // If stopped during negamax, do not trust this partial search result
@@ -679,5 +787,32 @@ mod tests {
         );
 
         assert_eq!(best_move.unwrap().to_uci(), "h5f7");
+    }
+
+    #[test]
+    fn test_lmr_table_generation() {
+        let stopped = Arc::new(AtomicBool::new(false));
+        let searcher = Searcher::new(stopped);
+        assert_eq!(searcher.lmr_table[0][0], 0);
+        assert!(searcher.lmr_table[3][4] >= 1);
+        assert!(searcher.lmr_table[8][10] >= 2);
+        assert!(searcher.lmr_table[16][16] >= 3);
+        // Table should be non-decreasing with depth and move count
+        assert!(searcher.lmr_table[10][10] >= searcher.lmr_table[5][5]);
+    }
+
+    #[test]
+    fn test_counter_move_scoring() {
+        let stopped = Arc::new(AtomicBool::new(false));
+        let mut searcher = Searcher::new(stopped);
+        let board = Board::new();
+
+        let prev = Move::encode(square::e2, square::e4, Piece::P, None, false, true, false, false);
+        let reply = Move::encode(square::e7, square::e5, Piece::PawnBlack, None, false, true, false, false);
+
+        searcher.counter_moves[prev.piece() as usize][prev.target()] = reply;
+
+        let score = searcher.score_move(&board, reply, 0, None, Some(prev));
+        assert_eq!(score, 7000);
     }
 }

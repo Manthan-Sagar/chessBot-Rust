@@ -7,7 +7,6 @@ use crate::types::*;
 
 pub const OPENING: usize = 0;
 pub const ENDGAME: usize = 1;
-pub const MIDDLEGAME: usize = 2;
 
 pub const PAWN: usize = 0;
 pub const KNIGHT: usize = 1;
@@ -22,9 +21,6 @@ pub const MATERIAL_SCORE: [[i32; 12]; 2] = [
     // Endgame material score
     [94, 281, 297, 512,  936, 12000, -94, -281, -297, -512,  -936, -12000],
 ];
-
-pub const OPENING_PHASE_SCORE: i32 = 6192;
-pub const ENDGAME_PHASE_SCORE: i32 = 518;
 
 pub const POSITIONAL_SCORE: [[[i32; 64]; 6]; 2] = [
     // Opening positional piece scores
@@ -275,34 +271,61 @@ impl EvalMasks {
     }
 }
 
-pub fn get_game_phase_score(board: &Board) -> i32 {
-    let mut white_piece_scores = 0;
-    let mut black_piece_scores = 0;
+#[inline(always)]
+pub fn get_game_phase(board: &Board) -> i32 {
+    let mut phase = 0;
+    phase += (count_bits(board.bitboards[Piece::N as usize]) + count_bits(board.bitboards[Piece::KnightBlack as usize])) as i32 * 1;
+    phase += (count_bits(board.bitboards[Piece::B as usize]) + count_bits(board.bitboards[Piece::BishopBlack as usize])) as i32 * 1;
+    phase += (count_bits(board.bitboards[Piece::R as usize]) + count_bits(board.bitboards[Piece::RookBlack as usize])) as i32 * 2;
+    phase += (count_bits(board.bitboards[Piece::Q as usize]) + count_bits(board.bitboards[Piece::QueenBlack as usize])) as i32 * 4;
+    phase.min(24)
+}
 
-    for piece in Piece::N as usize..=Piece::Q as usize {
-        white_piece_scores += count_bits(board.bitboards[piece]) as i32 * MATERIAL_SCORE[OPENING][piece];
-    }
-    for piece in Piece::KnightBlack as usize..=Piece::QueenBlack as usize {
-        black_piece_scores += count_bits(board.bitboards[piece]) as i32 * -MATERIAL_SCORE[OPENING][piece];
-    }
-
-    white_piece_scores + black_piece_scores
+#[inline(always)]
+fn chebyshev_distance(sq1: usize, sq2: usize) -> i32 {
+    let r1 = (sq1 / 8) as i32;
+    let f1 = (sq1 % 8) as i32;
+    let r2 = (sq2 / 8) as i32;
+    let f2 = (sq2 % 8) as i32;
+    (r1 - r2).abs().max((f1 - f2).abs())
 }
 
 pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) -> i32 {
-    let game_phase_score = get_game_phase_score(board);
-
-    let game_phase = if game_phase_score > OPENING_PHASE_SCORE {
-        OPENING
-    } else if game_phase_score < ENDGAME_PHASE_SCORE {
-        ENDGAME
-    } else {
-        MIDDLEGAME
-    };
+    let phase = get_game_phase(board);
 
     let mut score_opening: i32 = 0;
     let mut score_endgame: i32 = 0;
     let occ_both = board.occupancies[Color::Both as usize];
+
+    // Bishop pair bonuses
+    if count_bits(board.bitboards[Piece::B as usize]) >= 2 {
+        score_opening += 35;
+        score_endgame += 35;
+    }
+    if count_bits(board.bitboards[Piece::BishopBlack as usize]) >= 2 {
+        score_opening -= 35;
+        score_endgame -= 35;
+    }
+
+    // Pawn attack zones for knight mobility safety
+    let mut white_pawn_attacks = 0u64;
+    let mut wp = board.bitboards[Piece::P as usize];
+    while wp != 0 {
+        let sq = get_ls1b_index(wp).unwrap();
+        pop_bit(&mut wp, sq);
+        white_pawn_attacks |= attack_tables.pawn_attacks[Color::White as usize][sq];
+    }
+
+    let mut black_pawn_attacks = 0u64;
+    let mut bp = board.bitboards[Piece::PawnBlack as usize];
+    while bp != 0 {
+        let sq = get_ls1b_index(bp).unwrap();
+        pop_bit(&mut bp, sq);
+        black_pawn_attacks |= attack_tables.pawn_attacks[Color::Black as usize][sq];
+    }
+
+    let white_king_sq = get_ls1b_index(board.bitboards[Piece::K as usize]).unwrap_or(60);
+    let black_king_sq = get_ls1b_index(board.bitboards[Piece::KingBlack as usize]).unwrap_or(4);
 
     for bb_piece in 0..12 {
         let mut bitboard = board.bitboards[bb_piece];
@@ -329,14 +352,44 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                         score_endgame += ISOLATED_PAWN_PENALTY_ENDGAME;
                     }
 
-                    if (masks.white_passed_masks[square] & board.bitboards[Piece::PawnBlack as usize]) == 0 {
+                    let is_passed = (masks.white_passed_masks[square] & board.bitboards[Piece::PawnBlack as usize]) == 0;
+                    if is_passed {
                         score_opening += PASSED_PAWN_BONUS[GET_RANK[square]];
                         score_endgame += PASSED_PAWN_BONUS[GET_RANK[square]];
+
+                        // Protected passed pawn bonus
+                        if (attack_tables.pawn_attacks[Color::Black as usize][square] & board.bitboards[Piece::P as usize]) != 0 {
+                            score_opening += 20;
+                            score_endgame += 35;
+                        }
+
+                        // Endgame king proximity to passed pawn
+                        if phase < 14 {
+                            let wk_dist = chebyshev_distance(white_king_sq, square);
+                            let bk_dist = chebyshev_distance(black_king_sq, square);
+                            score_endgame += (bk_dist - wk_dist) * 6;
+                        }
                     }
                 }
                 1 => { // White Knight (N)
                     score_opening += POSITIONAL_SCORE[OPENING][KNIGHT][square];
                     score_endgame += POSITIONAL_SCORE[ENDGAME][KNIGHT][square];
+
+                    // Knight mobility
+                    let safe_sqs = attack_tables.knight_attacks[square] & !black_pawn_attacks & !board.occupancies[Color::White as usize];
+                    let mob = count_bits(safe_sqs) as i32 - 4;
+                    score_opening += mob * 4;
+                    score_endgame += mob * 4;
+
+                    // Knight Outpost on ranks 4-6 (r in 2..=4) supported by own pawn
+                    let r = square / 8;
+                    if r >= 2 && r <= 4 {
+                        let supported = (attack_tables.pawn_attacks[Color::Black as usize][square] & board.bitboards[Piece::P as usize]) != 0;
+                        if supported {
+                            score_opening += 25;
+                            score_endgame += 15;
+                        }
+                    }
                 }
                 2 => { // White Bishop (B)
                     score_opening += POSITIONAL_SCORE[OPENING][BISHOP][square];
@@ -349,6 +402,12 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                 3 => { // White Rook (R)
                     score_opening += POSITIONAL_SCORE[OPENING][ROOK][square];
                     score_endgame += POSITIONAL_SCORE[ENDGAME][ROOK][square];
+
+                    // Rook on 7th rank (rank index 1)
+                    if square / 8 == 1 {
+                        score_opening += 35;
+                        score_endgame += 35;
+                    }
 
                     if (board.bitboards[Piece::P as usize] & masks.file_masks[square]) == 0 {
                         score_opening += SEMI_OPEN_FILE_SCORE;
@@ -407,15 +466,45 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                         score_endgame -= ISOLATED_PAWN_PENALTY_ENDGAME;
                     }
 
-                    if (masks.black_passed_masks[square] & board.bitboards[Piece::P as usize]) == 0 {
+                    let is_passed = (masks.black_passed_masks[square] & board.bitboards[Piece::P as usize]) == 0;
+                    if is_passed {
                         score_opening -= PASSED_PAWN_BONUS[GET_RANK[square]];
                         score_endgame -= PASSED_PAWN_BONUS[GET_RANK[square]];
+
+                        // Protected passed pawn bonus
+                        if (attack_tables.pawn_attacks[Color::White as usize][square] & board.bitboards[Piece::PawnBlack as usize]) != 0 {
+                            score_opening -= 20;
+                            score_endgame -= 35;
+                        }
+
+                        // Endgame king proximity to passed pawn
+                        if phase < 14 {
+                            let wk_dist = chebyshev_distance(white_king_sq, square);
+                            let bk_dist = chebyshev_distance(black_king_sq, square);
+                            score_endgame -= (wk_dist - bk_dist) * 6;
+                        }
                     }
                 }
                 7 => { // Black Knight (n)
                     let mirror_sq = MIRROR_SCORE[square];
                     score_opening -= POSITIONAL_SCORE[OPENING][KNIGHT][mirror_sq];
                     score_endgame -= POSITIONAL_SCORE[ENDGAME][KNIGHT][mirror_sq];
+
+                    // Knight mobility
+                    let safe_sqs = attack_tables.knight_attacks[square] & !white_pawn_attacks & !board.occupancies[Color::Black as usize];
+                    let mob = count_bits(safe_sqs) as i32 - 4;
+                    score_opening -= mob * 4;
+                    score_endgame -= mob * 4;
+
+                    // Knight Outpost on ranks 4-6 (r in 3..=5) supported by own pawn
+                    let r = square / 8;
+                    if r >= 3 && r <= 5 {
+                        let supported = (attack_tables.pawn_attacks[Color::White as usize][square] & board.bitboards[Piece::PawnBlack as usize]) != 0;
+                        if supported {
+                            score_opening -= 25;
+                            score_endgame -= 15;
+                        }
+                    }
                 }
                 8 => { // Black Bishop (b)
                     let mirror_sq = MIRROR_SCORE[square];
@@ -430,6 +519,12 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
                     let mirror_sq = MIRROR_SCORE[square];
                     score_opening -= POSITIONAL_SCORE[OPENING][ROOK][mirror_sq];
                     score_endgame -= POSITIONAL_SCORE[ENDGAME][ROOK][mirror_sq];
+
+                    // Rook on 2nd rank (rank index 6)
+                    if square / 8 == 6 {
+                        score_opening -= 35;
+                        score_endgame -= 35;
+                    }
 
                     if (board.bitboards[Piece::PawnBlack as usize] & masks.file_masks[square]) == 0 {
                         score_opening -= SEMI_OPEN_FILE_SCORE;
@@ -479,14 +574,8 @@ pub fn evaluate(board: &Board, attack_tables: &AttackTables, masks: &EvalMasks) 
         }
     }
 
-    let score = if game_phase == MIDDLEGAME {
-        (score_opening * game_phase_score + score_endgame * (OPENING_PHASE_SCORE - game_phase_score))
-            / OPENING_PHASE_SCORE
-    } else if game_phase == OPENING {
-        score_opening
-    } else {
-        score_endgame
-    };
+    // Continuous 24-phase linear interpolation
+    let score = (score_opening * phase + score_endgame * (24 - phase)) / 24;
 
     if board.side == Color::White {
         score
@@ -510,7 +599,6 @@ mod tests {
         board.parse_fen(START_POSITION, &zobrist);
 
         let eval = evaluate(&board, &attack_tables, &masks);
-        // The start position is symmetrical, so the evaluation is close to zero
         assert!(eval.abs() < 50, "Start position eval is {}", eval);
     }
 }

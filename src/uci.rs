@@ -199,6 +199,14 @@ impl UciEngine {
             i += 1;
         }
 
+        if limits.movetime.is_none() {
+            if let Some(time) = limits.time {
+                let moves_to_go = limits.movestogo.unwrap_or(30).clamp(10, 50) as u64;
+                let alloc = (time / moves_to_go) + (limits.inc * 3 / 4);
+                limits.movetime = Some(alloc.min(time.saturating_sub(30)));
+            }
+        }
+
         let mut searcher = Searcher::new(self.stopped.clone());
         searcher.search_position(
             max_depth,
