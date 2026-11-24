@@ -60,6 +60,7 @@ pub struct Searcher {
     pub follow_pv: bool,
     pub score_pv: bool,
     pub multipv: usize,
+    pub last_multipv_lines: Vec<(usize, i32, Vec<Move>)>,
 }
 
 impl Searcher {
@@ -86,6 +87,7 @@ impl Searcher {
             follow_pv: false,
             score_pv: false,
             multipv: 1,
+            last_multipv_lines: Vec::new(),
         }
     }
 
@@ -380,8 +382,28 @@ impl Searcher {
             }
         }
 
-        // Null move pruning
-        if depth >= 3 && !in_check && board.ply > 0 {
+        // Null move pruning with adaptive reduction and zugzwang guard
+        let has_non_pawn_material = if board.side == Color::White {
+            (board.bitboards[Piece::N as usize]
+                | board.bitboards[Piece::B as usize]
+                | board.bitboards[Piece::R as usize]
+                | board.bitboards[Piece::Q as usize])
+                != 0
+        } else {
+            (board.bitboards[Piece::KnightBlack as usize]
+                | board.bitboards[Piece::BishopBlack as usize]
+                | board.bitboards[Piece::RookBlack as usize]
+                | board.bitboards[Piece::QueenBlack as usize])
+                != 0
+        };
+
+        if depth >= 3
+            && !in_check
+            && !pv_node
+            && board.ply > 0
+            && has_non_pawn_material
+            && static_eval >= beta
+        {
             let state = board.save_state();
             board.ply += 1;
             board.repetition_index += 1;
@@ -394,10 +416,12 @@ impl Searcher {
             board.side = board.side.opposite();
             board.hash_key ^= zobrist.side_key;
 
+            let r = 3 + depth / 6;
+            let null_depth = (depth - 1 - r).max(0);
             let score = -self.negamax(
                 -beta,
                 -beta + 1,
-                depth - 1 - 2,
+                null_depth,
                 board,
                 attack_tables,
                 masks,
@@ -416,6 +440,27 @@ impl Searcher {
 
             if score >= beta {
                 return beta;
+            }
+        }
+
+        // Internal Iterative Deepening (IID): seed TT move ordering when missing at depth >= 5
+        if depth >= 5 && tt_move.is_none() && !in_check && board.ply > 0 {
+            self.negamax(
+                alpha,
+                beta,
+                depth - 2,
+                board,
+                attack_tables,
+                masks,
+                zobrist,
+                tt,
+                prev_move,
+            );
+            if self.stopped.load(Ordering::Relaxed) {
+                return 0;
+            }
+            if let Some((_, best_m)) = tt.read(board.hash_key, alpha, beta, depth, board.ply) {
+                tt_move = best_m;
             }
         }
 
@@ -667,6 +712,7 @@ impl Searcher {
         self.counter_moves = [[Move::NULL; 64]; 12];
         self.pv_table = [[Move::NULL; MAX_PLY]; MAX_PLY];
         self.pv_length = [0; MAX_PLY];
+        self.last_multipv_lines.clear();
 
         if self.multipv > 1 {
             let mut root_moves = MoveList::new();
@@ -742,24 +788,62 @@ impl Searcher {
                             break;
                         }
 
+                        self.pv_length[1] = 1;
                         let move_state = board.save_state();
+                        board.ply += 1;
                         board.repetition_index += 1;
                         board.repetition_table[board.repetition_index] = board.hash_key;
                         make_move(board, m, MoveFlag::AllMoves, attack_tables, zobrist);
 
-                        let score = -self.negamax(
-                            -INFINITY,
-                            INFINITY,
-                            (current_depth as i32) - 1,
-                            board,
-                            attack_tables,
-                            masks,
-                            zobrist,
-                            tt,
-                            Some(m),
-                        );
+                        let score = if best_m == Move::NULL {
+                            -self.negamax(
+                                -INFINITY,
+                                INFINITY,
+                                (current_depth as i32) - 1,
+                                board,
+                                attack_tables,
+                                masks,
+                                zobrist,
+                                tt,
+                                Some(m),
+                            )
+                        } else {
+                            let probe = -self.negamax(
+                                -best_score - 1,
+                                -best_score,
+                                (current_depth as i32) - 1,
+                                board,
+                                attack_tables,
+                                masks,
+                                zobrist,
+                                tt,
+                                Some(m),
+                            );
+                            if !self.stopped.load(Ordering::Relaxed) && probe > best_score {
+                                self.pv_length[1] = 1;
+                                -self.negamax(
+                                    -INFINITY,
+                                    INFINITY,
+                                    (current_depth as i32) - 1,
+                                    board,
+                                    attack_tables,
+                                    masks,
+                                    zobrist,
+                                    tt,
+                                    Some(m),
+                                )
+                            } else {
+                                probe
+                            }
+                        };
 
+                        board.ply -= 1;
+                        board.repetition_index -= 1;
                         board.restore_state(&move_state);
+
+                        if self.stopped.load(Ordering::Relaxed) {
+                            break;
+                        }
 
                         if score > best_score {
                             best_score = score;
@@ -770,6 +854,10 @@ impl Searcher {
                             }
                             best_pv = pv;
                         }
+                    }
+
+                    if self.stopped.load(Ordering::Relaxed) {
+                        break;
                     }
 
                     if best_m != Move::NULL {
@@ -789,13 +877,13 @@ impl Searcher {
                 for (pv_num, score, pv) in &current_pv_results {
                     let pv_str = pv.iter().map(|m| m.to_uci()).collect::<Vec<_>>().join(" ");
                     if *score > -MATE_VALUE && *score < -MATE_SCORE {
-                        let mate_in = -(*score + MATE_VALUE) / 2 - 1;
+                        let mate_in = -((*score + MATE_VALUE + 1) / 2);
                         println!(
                             "info depth {} multipv {} score mate {} nodes {} time {} nps {} pv {}",
                             current_depth, pv_num, mate_in, self.nodes, elapsed_ms, nps, pv_str
                         );
                     } else if *score > MATE_SCORE && *score < MATE_VALUE {
-                        let mate_in = (MATE_VALUE - *score) / 2 + 1;
+                        let mate_in = (MATE_VALUE - *score + 1) / 2;
                         println!(
                             "info depth {} multipv {} score mate {} nodes {} time {} nps {} pv {}",
                             current_depth, pv_num, mate_in, self.nodes, elapsed_ms, nps, pv_str
@@ -808,6 +896,7 @@ impl Searcher {
                     }
                 }
 
+                self.last_multipv_lines = current_pv_results;
                 best_move = Some(multi_best_moves[0]);
                 current_depth += 1;
             }
@@ -873,7 +962,7 @@ impl Searcher {
                 if score > -MATE_VALUE && score < -MATE_SCORE {
                     println!(
                         "info score mate {} depth {} nodes {} time {} nps {} pv {}",
-                        -(score + MATE_VALUE) / 2 - 1,
+                        -((score + MATE_VALUE + 1) / 2),
                         current_depth,
                         self.nodes,
                         elapsed_ms,
@@ -883,7 +972,7 @@ impl Searcher {
                 } else if score > MATE_SCORE && score < MATE_VALUE {
                     println!(
                         "info score mate {} depth {} nodes {} time {} nps {} pv {}",
-                        (MATE_VALUE - score) / 2 + 1,
+                        (MATE_VALUE - score + 1) / 2,
                         current_depth,
                         self.nodes,
                         elapsed_ms,

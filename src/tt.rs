@@ -87,6 +87,31 @@ impl TranspositionTable {
         best_move: Option<Move>,
     ) {
         let index = (hash_key % (self.num_entries as u64)) as usize;
+        let existing = &self.entries[index];
+
+        let should_replace = if existing.hash_key == 0 {
+            true
+        } else if existing.hash_key == hash_key {
+            if existing.flag == HASH_FLAG_EXACT && flag != HASH_FLAG_EXACT {
+                depth > existing.depth
+            } else {
+                depth >= existing.depth || (flag == HASH_FLAG_EXACT && depth + 1 >= existing.depth)
+            }
+        } else {
+            depth + 2 >= existing.depth
+        };
+
+        if !should_replace {
+            return;
+        }
+
+        let stored_move = if best_move.is_some() {
+            best_move
+        } else if existing.hash_key == hash_key {
+            existing.best_move
+        } else {
+            None
+        };
 
         if score < -MATE_SCORE {
             score -= ply as i32;
@@ -99,7 +124,7 @@ impl TranspositionTable {
             depth,
             flag,
             score,
-            best_move,
+            best_move: stored_move,
         };
     }
 }
@@ -118,5 +143,37 @@ mod tests {
         assert!(res.is_some());
         let (score, _) = res.unwrap();
         assert_eq!(score, 50);
+    }
+
+    #[test]
+    fn test_tt_depth_preferred_replacement() {
+        let mut tt = TranspositionTable::new(1);
+        let dummy_move = Move::encode(12, 28, crate::types::Piece::P, None, false, true, false, false);
+        let key: u64 = 99999;
+
+        // Write a deep exact entry
+        tt.write(key, 120, 6, HASH_FLAG_EXACT, 0, Some(dummy_move));
+
+        // Attempt to overwrite same key with shallow ALPHA bound
+        tt.write(key, 10, 2, HASH_FLAG_ALPHA, 0, None);
+        let res = tt.read(key, -1000, 1000, 6, 0).expect("deep entry should still exist");
+        assert_eq!(res.0, 120, "shallow alpha write must not overwrite deep exact entry");
+        assert_eq!(res.1, Some(dummy_move), "best move must be preserved");
+
+        // Attempt to overwrite same key with shallow EXACT bound
+        tt.write(key, 15, 2, HASH_FLAG_EXACT, 0, None);
+        let res2 = tt.read(key, -1000, 1000, 6, 0).expect("deep exact entry should still exist");
+        assert_eq!(res2.0, 120, "shallow exact write must not overwrite deeper exact entry");
+
+        // Attempt colliding bucket overwrite with much shallower depth (depth 1 vs 6)
+        let colliding_key = key + (tt.num_entries as u64);
+        tt.write(colliding_key, -50, 1, HASH_FLAG_BETA, 0, None);
+        let res3 = tt.read(key, -1000, 1000, 6, 0).expect("deep entry should survive shallow collision");
+        assert_eq!(res3.0, 120);
+
+        // Deeper write should replace
+        tt.write(key, 145, 7, HASH_FLAG_EXACT, 0, Some(dummy_move));
+        let res4 = tt.read(key, -1000, 1000, 7, 0).unwrap();
+        assert_eq!(res4.0, 145);
     }
 }
