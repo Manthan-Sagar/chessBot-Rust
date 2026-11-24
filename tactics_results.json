@@ -1,0 +1,50 @@
+[
+  {
+    "test": 1,
+    "desc": "Scholar's Mate in 1",
+    "fen": "r1bqkb1r/pppp1ppp/2n5/4p2Q/2B1n3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 5",
+    "expected": "h5f7",
+    "played": "h5f7",
+    "pass": true
+  },
+  {
+    "test": 2,
+    "desc": "Back-rank Mate in 1",
+    "fen": "6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1",
+    "expected": "e1e8",
+    "played": "e1e8",
+    "pass": true
+  },
+  {
+    "test": 3,
+    "desc": "Block check or pin queen",
+    "fen": "r1b1kb1r/pppp1ppp/8/4q3/8/8/PPPP1PPP/RNBQKB1R w KQkq - 0 1",
+    "expected": "d1e2",
+    "played": "f1e2",
+    "pass": false
+  },
+  {
+    "test": 4,
+    "desc": "Standard castling development",
+    "fen": "r2qkb1r/pp2pppp/2n2n2/3p4/3P2b1/2PB1N2/PP3PPP/RNBQK2R w KQkq - 1 7",
+    "expected": "e1g1",
+    "played": "e1g1",
+    "pass": true
+  },
+  {
+    "test": 5,
+    "desc": "Quiet opening development",
+    "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 1 5",
+    "expected": "b1c3",
+    "played": "b1c3",
+    "pass": true
+  },
+  {
+    "test": 6,
+    "desc": "Greek gift sacrifice / tactical strike",
+    "fen": "r1b2rk1/pp3ppp/2n5/2qp4/8/1P1B1N2/P1P2PPP/R2Q1RK1 w - - 0 14",
+    "expected": "d3h7",
+    "played": "a1c1",
+    "pass": false
+  }
+]
