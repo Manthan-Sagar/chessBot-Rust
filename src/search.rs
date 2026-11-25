@@ -871,6 +871,15 @@ impl Searcher {
                     break;
                 }
 
+                // Keep MultiPV lines strictly ordered by score descending (handles PVS search instability)
+                current_pv_results.sort_by(|a, b| b.1.cmp(&a.1));
+                for (idx, item) in current_pv_results.iter_mut().enumerate() {
+                    item.0 = idx + 1;
+                    if !item.2.is_empty() {
+                        multi_best_moves[idx] = item.2[0];
+                    }
+                }
+
                 let elapsed_ms = self.start_time.elapsed().as_millis().max(1) as u64;
                 let nps = (self.nodes as f64 / (elapsed_ms as f64 / 1000.0)) as u64;
 
