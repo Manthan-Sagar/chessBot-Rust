@@ -458,6 +458,7 @@ body {
     gap: 6px;
     transition: all 0.2s;
     cursor: pointer;
+    min-width: 0;
 }
 
 .pv-card:hover {
@@ -494,10 +495,11 @@ body {
 .pv-moves {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
+    line-height: 1.5;
     color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 /* Mode Buttons */
@@ -734,4 +736,66 @@ body {
     background: var(--accent-cyan);
     color: #0d1117;
     transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .board-section {
+        width: 100%;
+    }
+
+    .board-wrapper {
+        width: min(560px, calc(100vw - 110px));
+        height: min(560px, calc(100vw - 110px));
+    }
+}
+
+@media (max-width: 640px) {
+    .app-container {
+        padding: 10px 12px;
+        gap: 12px;
+    }
+
+    .navbar {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 10px 14px;
+    }
+
+    .brand-text h1 {
+        font-size: 16px;
+    }
+
+    .board-section {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .eval-bar-container {
+        width: 28px;
+    }
+
+    .eval-badge {
+        font-size: 9px;
+        padding: 1px 3px;
+    }
+
+    .board-wrapper {
+        width: min(560px, calc(100vw - 84px));
+        height: min(560px, calc(100vw - 84px));
+    }
+
+    .action-buttons-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mode-btn {
+        padding: 7px 6px;
+        font-size: 11px;
+    }
+
+    .promo-choices {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 }
