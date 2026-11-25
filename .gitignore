@@ -1,2 +1,4 @@
 /target
 /reference
+__pycache__/
+*.pyc
